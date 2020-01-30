@@ -1,0 +1,357 @@
+
+<html><head>
+<title>Ставим пароль на страницу | WebClub</title>
+<meta http-equiv=keywords name=keywords content="">
+<meta http-equiv=description name=description content="Ставим пароль на страницу">
+
+<link rel="stylesheet" href="/site/site.css" type="text/css">
+
+</head>
+<body background="../fon.jpg">
+<h4 align="center"><font size="3">Ставим пароль на страницу </font> </h4>
+<p align="justify"> <font size="2">Данная статья не претендует на какие-то откровения, 
+  все эти вещи достаточно очевидны и широко известны. Но получив за последнее 
+  время несколько вопросов об ограничении доступа к web-страницам, я решил свести 
+  ответы на них вместе. </font>
+<p align="justify"><font size="2">Итак, наша задача - установить пароль на доступ 
+  к некоторой странице. Начнем с самого примитивного способа, если можно так сказать, 
+  защиты - нескольких строчек на JavaScript'е. Код - что-то вроде </font>
+<pre><font size="2">
+var pass = prompt("Enter the Password:", "");
+if (pass == null)
+  window.location = "bad.html";
+else if (pass.toLowerCase() == "password")
+  window.location = "ok.html";
+else
+  window.location = "bad.html";
+</font></pre>
+<font size="2"> </font> 
+<p align="justify"><font size="2">Уровнем повыше расположена аналогичная система, 
+  реализованная на Java. </font>
+<p align="justify"><font size="2">Ниже приведен упрощенный исходный код. </font>
+<pre><font size="2">
+import java.applet.*;
+import java.awt.*;
+import java.net.*;
+
+public class Password extends Applet
+{
+
+   TextField login, password;
+   String Login = "login";
+   String Password = "Password";
+   public Password()
+   {
+   }
+   public void init()
+   {
+      Panel panel = new Panel();
+      panel.setLayout(new GridLayout(2,2));
+      login = new TextField(20);
+      password = new TextField(20);
+      panel.add(new Label("Login:"));
+      panel.add(login);
+      panel.add(new Label("Password:"));
+      panel.add(password);
+      add(panel);
+      add(new Button("Ok"));
+   }
+   public boolean action(Event evt, Object obj)
+   {
+      if(evt.target instanceof Button)
+      {
+         String s;
+         if(login.getText().equals(Login) && password.getText().equals(Password) )
+         {
+            s = "http://www.webclub.ru/materials/pagepsw/ok.html";
+         }
+         else
+         {
+            s = "http://www.webclub.ru/materials/pagepsw/bad.html";
+         }
+         try
+         {
+            getAppletContext().showDocument(new URL(s));
+         }
+         catch(Exception e)
+         {
+            password.setText(e.toString());
+         }
+         return true;
+      }
+      return false;
+   }
+}
+</font></pre>
+<p align="justify"><font size="2">Включив этот апплет в страницу, можно получить 
+  нечто такое: </font>
+<p align="justify"> 
+<div align="center">
+  <center>
+    <table border="1" bgcolor="#C0C0C0" align="center">
+      <tr>
+        <td align="center" bgcolor="navy"> <font color="white">Password check</font> 
+        </td>
+      </tr>
+      <tr>
+        <td align="center" bgcolor="#C0C0C0"> <applet
+    code=password.class
+    name=password
+    width=300
+    height=80 >
+          </applet> </td>
+      </tr>
+    </table>
+  </center>
+</div>
+<p align="justify"><font size="2">Его можно сделать поумнее, завести для каждого 
+  пользователя отдельную страницу, заставить считывать данные из файла и т.д. 
+  Принципиальный недостаток - после того как человек попал на искомую страницу, 
+  никто не в силах запретить ему запомнить этот URL, так что средство это одноразовое. 
+  Конечно, можно запрятать страницу внутрь фрейма, чтобы URL не светился в строке 
+  адреса, но сами понимаете, от кого эта защита. Опять же, апплет полностью уходит 
+  к клиенту и в принципе полностью доступен для исследования. </font>
+<p align="justify"><font size="2">Последнего недостатка лишено решение, основанное 
+  на использовании CGI. Простенький скрипт на Perl'е выглядит примерно так: </font>
+<pre><font size="2">
+#!/usr/bin/perl
+use CGI qw(:standard);
+$query = new CGI;
+$ok = 'ok.html';
+$address = 'bad.html';
+$login = "login";
+$password = "password";
+$l = $query->param("login");
+$p = $query->param("password");
+if(($p eq $password) && ($l eq $login))
+{
+  $address = $ok;
+}
+print $query->redirect($address);
+</font></pre>
+<p align="justify"><font size="2">Пример использования:</font>
+<p align="justify"> 
+<div align="center">
+  <center>
+    <table border="1" bgcolor="#C0C0C0">
+      <tr>
+        <td align="center" bgcolor="navy"> <font color="#FFFFFF">Password check</font></td>
+      </tr>
+      <tr> 
+        <td align="center" bgcolor="#C0C0C0"> 
+          <form action="check1.cgi" method="POST">
+            <table border="0">
+              <tr> 
+                <td>Login:</td>
+                <td>
+                  <input type="text" size="25" name="login" maxlength="30">
+                </td>
+              </tr>
+              <tr> 
+                <td>Старый пароль:</td>
+                <td>
+                  <input type="password" size="25" name="password" maxlength="30" class="field">
+                </td>
+              </tr>
+            </table>
+            <br>
+            <table border="0" width="50%">
+              <tr> 
+                <td align="center">
+                  <input type="submit" value="    Ok   ">
+                </td>
+                <td align="center">
+                  <input type="reset" value=" Clear ">
+                </td>
+              </tr>
+            </table>
+          </form>
+        </td>
+      </tr>
+    </table>
+  </center>
+</div>
+<p align="justify"><font size="2">Чтобы справиться с первым недостатком, можно 
+  динамически сформировать новую страницу на основе спрятанной где-то там внутри, 
+  не выдавая при этом URL. </font>
+<p align="justify"><font size="2">Модифицированный код: </font>
+<p align="justify"> 
+<pre><font size="2">
+#!/usr/bin/perl
+use CGI qw(:standard);
+$query = new CGI;
+$ok = 'ok.html';
+$address = 'bad.html';
+$docroot = $ENV{'DOCUMENT_ROOT'};
+$localpath = "/materials/pagepsw/";
+$login = "login";
+$password = "password";
+$l = $query->param("login");
+$p = $query->param("password");
+if(($p eq $password) && ($l eq $login))
+{
+  $address = $ok;
+}
+print $query->header();
+open (FL, $docroot.$localpath.$address);
+while(&lt;FL&gt;)
+{
+# Здесь заодно можно на лету модифицировать html-код
+# Зачем ? Ну мало ли... :)
+  print $_;
+}
+close (FL);
+</font></pre>
+<p align="justify"><font size="2">Пример использования:</font>
+<p align="justify"> 
+<div align="center">
+  <center>
+    <table border="1" bgcolor="#C0C0C0">
+      <tr>
+        <td align="center" bgcolor="navy"> <font color="#FFFFFF">Password check</font></td>
+      </tr>
+      <tr> 
+        <td align="center" bgcolor="#C0C0C0"> 
+          <form action="check2.cgi" method="POST">
+            <table border="0">
+              <tr> 
+                <td>Login:</td>
+                <td>
+                  <input type="text" size="25" name="login" maxlength="30">
+                </td>
+              </tr>
+              <tr> 
+                <td>Старый пароль:</td>
+                <td>
+                  <input type="password" size="25" name="password" maxlength="30" class="field">
+                </td>
+              </tr>
+            </table>
+            <br>
+            <table border="0" width="50%">
+              <tr> 
+                <td align="center">
+                  <input type="submit" value="    Ok   ">
+                </td>
+                <td align="center">
+                  <input type="reset" value=" Clear ">
+                </td>
+              </tr>
+            </table>
+          </form>
+        </td>
+      </tr>
+    </table>
+  </center>
+</div>
+<p align="justify"><font size="2"> Как видно, URL файла уже не светится, правда 
+  ценой SSI, если что-то подобное присутствовало (впрочем, это как раз можно отлавливать 
+  при выводе и обрабатывать вручную). Но и здесь остается теоретическая возможность 
+  угадывания URL, при этом не надо забывать, что медвежью услугу могут сослужить 
+  всевозможные картинки, включаемые в страницы - при использовании относительных 
+  путей, конечно. </font>
+<p align="justify"><font size="2">Наконец, наиболее надежный способ установки 
+  пароля на доступ - это воспользоваться средствами сервера - не зря ж их люди 
+  делали, в конце концов. Остановлюсь на двух - Апаче как самом популярном и IIS 
+  как тоже популярном :) </font>
+<p align="justify"><font size="2">С IIS все совсем просто - защита осуществляется 
+  средствами NTFS, что, конечно, несколько ограничивает возможности не-администраторов 
+  сервера. Идея следующая: у пользователя IUSR_xxxx, под аккаунтом которого по 
+  умолчанию работают все посетители узла, отбирается доступ к желаемому файлу/каталогу. 
+  После чего доступ к этим файлам будут иметь только те пользователи, для которых 
+  это явно указано в Properties->Security. Понятно, что их гораздо удобнее объединять 
+  в группы. Здесь есть пара тонкостей. Во-первых, указанным пользователям должно 
+  быть дано право Logon locally (Policies->User Rights в User Manager'е). Во-вторых, 
+  если не выбрать в настройках WWW service Basic authentication (Clear Text), 
+  внутрь будут пропущены только пользователи Internet Explorer'а. </font>
+<p align="justify"><font size="2">В Apache все делается несколько иначе. Защита 
+  ставится на уровне каталогов. Соответствующие директивы могут быть помещены 
+  как в в общий конфигурационный файл (в разделе &lt;Directory&gt;), так и в файлы 
+  .htaccess. Набор директив в обоих случаях одинаков, а для большинства людей, 
+  арендующих место под сайт/страницу на чужом сервере, гораздо актуальнее второй 
+  способ. Итак, вы создаете в каталоге, доступ к которому планируется ограничить, 
+  файл .htaccess, после чего вставляете в него следующие директивы (привожу основные): 
+  </font>
+<p align="justify"> <font size="2"><b>AuthType</b> <i>тип контроля</i> - обычно 
+  используется Basic. </font>
+<p align="justify"> <font size="2"><b>AuthName</b> <i>имя</i> - задает имя области, 
+  в которой действительны имена и пароли пользователей. Это то самое имя, которое 
+  броузер показывает в диалоге ввода пароля. Задав одно такое имя для разных каталогов, 
+  можете сэкономить пользователям время по вводу лишнего пароля. </font>
+<p align="justify"> <font size="2"><b>AuthGroupFile</b> <i>имя</i> - задает имя 
+  файла, в котором хранятся имена групп и их членов. Его формат: <br>
+  group1: member1 member2 ... <br>
+  group2: member3 member4 ... </font>
+<p align="justify"> <font size="2"><b>AuthUserFile</b> <i>имя</i> - задает имя 
+  файла с паролями. По большому счету для его формирования надо воспользоваться 
+  утилитой htpasswd из поставки Apache. Но по крайней мере для некоторых версий 
+  сервера этот формат такой: <br>
+  user1:<i>passwordhash1</i> <br>
+  user2:<i>passwordhash2</i> </font>
+<p align="justify"><font size="2">Passwordhash вполне можно получить стандартной 
+  функцией Perl'а: <br>
+  $hash=crypt($pass,$salt); <br>
+  где $pass - пароль, $salt - строка из двух символов, участвующая в формировании 
+  хэша. </font>
+<p align="justify"><font size="2">Так что вполне можно автоматизировать процесс 
+  добавления новых пользователей, смену паролей через html-формы и т.д. </font>
+<p align="justify"><font size="2"><b>require user</b> <i>user1 user2 </i> и <b>require 
+  group</b> <i>user1 user2 </i> позволяют указать, какие пользователи и группы 
+  получат доступ к данному каталогу. </font>
+<p align="justify"><font size="2"><b>require valid-user</b> разрешает доступ всем 
+  пользователям, указанным в файле паролей системы. </font>
+<p align="justify"> <font size="2"><b>&lt;Limit method1 method2 ...&gt; ... &lt;/Limit&gt;</b> 
+  , где method<i>i</i> определяет HTTP-метод. Например, &lt;Limit GET POST&gt; 
+  ограничивает применение вложенных в нее директив случаями использования методов 
+  GET и POST (обычно этого более чем достаточно). Вложенными могут быть директивы 
+  require, order, allow и deny. </font>
+<p align="justify"><font size="2">Еще пара полезных директив - deny и allow - 
+  соответственно запрещения и разрешения доступа. Применяются примерно так: <br>
+  deny from all <br>
+  allow from 192.168 </font>
+<p align="justify"><font size="2"> По умолчанию сначала выполняются все deny, 
+  потом все allow, так что allow from all разрешит доступ всем пользователям, 
+  невзирая ни на какие deny. Порядок можно изменить директивой order: order allow, 
+  deny. </font>
+<p align="justify"><font size="2">deny from all отлично сочетается со вторым способом 
+  защиты страниц через CGI, именно этой директивой лучше всего прикрывать всякие 
+  пароли к гостевым книгам и т.д. При попытке обращения к страницам из этого каталога 
+  пользователь получит нечто <a href="deny/ok.html">такое</a>. </font>
+<p align="justify"><font size="2">Кстати, тут между делом демонстрируется самостоятельная 
+  обработка ошибок: в данном случае - код 403, Forbidden. Аналогично обрабатывается 
+  и всеми любимая 404, Not Found, и 401, Unauthorized. Для этого достаточно добавить 
+  в .htaccess директиву <b>ErrorDocument</b> <i>код url</i>: <br>
+  ErrorDocument 404 /cgi-bin/bad.pl <br>
+  ErrorDocument 403 /cgi-bin/badaccess.pl <br>
+  ErrorDocument 401 /cgi-bin/badaccess.pl </font>
+<p align="justify"><font size="2">Все, что делает скрипт - формирует сообщение 
+  об ошибке, используя переменную окружения REQUEST_URI, так что всместо него 
+  вполне можно просто указать какую-нибудь подходящую страницу. </font>
+<p align="justify"><font size="2">Для заключительного примера используем файл 
+  .htaccess со следующим содержимым: </font>
+<pre><font size="2">
+AuthType Basic
+AuthName Test
+AuthGroupFile /.../pagepsw/deny/tgroup
+AuthUserFile /.../pagepsw/deny/tuser
+&lt;Limit GET POST&gt;
+require group test
+&lt;/Limit&gt;
+</font></pre>
+<p align="justify"><font size="2">В файле tgroup всего одна строчка - <i>test: 
+  login test</i>, в файле tuser - зашифрованные пароли для login (password) и 
+  test (test). Результат можете оценить <a href="test/ok.html">здесь</a>. Обратите 
+  внимание, при повторном обращении к этой странице броузер понимает, что только 
+  что обращался к этой области, и не утруждает пользователя лишним запросом пароля. 
+  </font>
+<p align="justify"><font size="2"> Таков вкратце минимальный набор сведений, необходимых 
+  для защиты web-страниц. Как показывает практика, более-менее доверять стоит 
+  лишь решениям, основанным на средствах, предоставляемых сервером (и то до тех 
+  пор, пока в сервере не обнаружится очередная дырка), так что если есть возможность, 
+  лучше выбирать именно их.</font> 
+<center>
+</center>
+
+
+</body></html>
+

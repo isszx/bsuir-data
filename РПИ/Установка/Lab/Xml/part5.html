@@ -1,0 +1,436 @@
+<html>
+<head>
+<title>Язык XML. Схемы данных</title>
+</head>
+<body background="../fon.gif">
+<p><div align="center"><b>5. Схемы данных</b></div></p><font size="-1">
+
+<p align=justify>Схемы данных (Schemas) являются альтернативным способом создания правил построения XML-документов. По сравнению с DTD, схемы обладают более мощными средствами для определения сложных структур данных, обеспечивают более понятный способ описания грамматики языка, способны легко модернизироваться и расширяться. Безусловным достоинством схем является также то, что они позволяют описывать правила для XML- документа средствами самого же XML.
+</p>
+<p align=justify>Однако это не означает, что схемы могут полностью заменить DTD- описания - этот способ определения грамматики языка используется сейчас практическими всеми верифицирующими анализаторами XML и, более того, сами схемы, как обычные XML- элементы, тоже описываются DTD. Но серьезные возможности нового языка и его относительная простота, безусловно, дают основания утверждать, что будущий стандарт найдет широкое применение в качестве удобного и эффективного средства проверки корректности составления документов. 
+</p>
+<p align=justify>В настоящее время в W3 консорциуме идет работа над первой спецификацией схем данных, рабочий ее вариант сейчас доступен на сервере [<a href="links.html#36">36</a>]. В этом разделе мы рассмотрим основные возможности схем данных, попытаемся использовать их для проверки корректности ранее описываемых XML- документов.
+</p>
+<b>Как это выглядит</b>
+<p align=justify></b>Внешне документы схем очень похожи на те документы XML, с которыми мы уже встречались в предыдущих разделах. Мы размечаем документ при помощи специальных элементов, выполняющих в схемах роль инструкций. Эти инструкции составляют набор правил, используя которые, программа-клиент будет делать вывод о том, корректен документ или нет. Схема данных, например, может выглядеть следующем образом:
+</p>
+<pre>
+&lt;schema id="OurSchema"&gt;
+&lt;elementType id="#title"&gt;
+&lt;string/&gt;
+&lt;/elementType&gt;
+&lt;elementType id="photo"&gt;
+&lt;element type="#title"&gt;
+&lt;attribute name="src"/&gt;
+&lt;/elementType&gt;
+&lt;elementType id="gallery"&gt;
+&lt;element type="#photo"&gt;
+&lt;/elementType&gt;
+&lt;/schema&gt;                         
+</pre>
+<p align=justify>Если мы включим приведенные правила внутрь XML- документа, программа-клиент сможет использовать их для проверки. Т.е. она теперь сможет определить, что правильным будет являться следующий фрагмент:
+</p>
+<pre>
+&lt;gallery&gt;
+&lt;photo id="1"&gt;&lt;title&gt;My computer&lt;/title&gt;&lt;/photo&gt;
+&lt;photo id="2"&gt;&lt;title&gt;My family&lt;/title&gt;&lt;/photo&gt;
+&lt;photo id="3"&gt;&lt;title&gt;My dog&lt;/title&gt;&lt;/photo&gt;
+&lt;/gallery&gt;
+</pre>
+<p align=justify>, а некорректным этот:
+</p>
+<pre>
+&lt;gallery&gt;
+&lt;photo id="1"/&gt;
+&lt;photo index="2"&gt;&lt;title&gt;My family&lt;/title&gt;&lt;/photo&gt;
+&lt;photo index="3"&gt;&lt;title&gt; My dog &lt;/title&gt;&lt;dogname&gt;
+Sharik&lt;/dogname&gt;&lt;/photo&gt;
+&lt;/gallery&gt;                        
+</pre>
+<p align=justify>Все конструкции языка схем описываются правилами "XML DTD for XML-Data-Schema". Этот документ вы можете найти среди другой официальной документации, доступной на сервере W3 - консорциума. В этой статье мы коснемся лишь основных приемов для работы со схемами данных. Ссылки на более подробные источники приведены в конце.
+</p>
+<b>Область схемы данных</b>
+
+<p align=justify></b>Создавая схемы данных, мы определяем в документе специальный элемент, <b>&lt;schema&gt</b>;, </b>внутри которого содержатся описания правил:
+</p>
+<pre>
+&lt;schema id="OurSchema"&gt;
+&lt;!-- последовательность инструкций --&gt;
+&lt;/schema&gt;
+</pre>
+<p align=justify>Если использовать отдельное пространство имен, то полный XML-документ, содержащий в себе схему данных, будет выглядеть следующим образом:
+</p>
+<pre>
+&lt;?XML version='1.0' ?&gt;
+&lt;?xml:namespace 
+href="http://www.mrcpk.nstu.ru/schemas/" as="s"/?&gt;
+&lt;s:schema id="OurSchema"&gt;
+&lt;!-- последовательность инструкций --&gt;
+&lt;/s:schema&gt;
+</pre>
+<b>Описание элементов</b>
+<p align=justify>Для определения класса элемента, к которому в дальнейшем будут применяться инструкции, описывающие его содержимое и структуру, предназначен специальный элемент схемы <b>elementType</b>, 
+</p>
+<pre>
+&lt;elementType id="issue"&gt;
+&lt;descript&gt;Элемент содержит информацию об очередном
+ выпуске журнала&lt;/descript&gt;
+&lt;/elementType&gt;
+</pre>
+<p align=justify>Название элемента задается атрибутом id . Все дальнейшие инструкции, которые относятся к описываемому классу, определяют его внутреннюю структуру и набор допустимых данных, содержатся внутри блока, заданного тэгами &lt;elementType&gt; и &lt;/elementType&gt;. Мы рассмотрим эти инструкции чуть позже.
+</p>
+<p align=justify>Как видно из примера, при определении класса элемента, можно также использовать комментарии к нему, которые заключаются в тэги &lt;<b>descript&gt;&lt;/descript&gt; </b>
+</p>
+<b>Атрибуты элемента</b>
+<p align=justify>Для того, чтобы в описании элемента определить его атрибуты и описать свойства этих атрибутов мы должны  использовать элемент <b>attribute</b>:
+</p>
+<pre>
+&lt;elementType id="photo"&gt;
+&lt;attribute name="src"/&gt;
+&lt;empty/&gt;
+&lt;/elementType&gt;
+</pre>
+<p align=justify>В данном примере элементу <i>&lt;photo&gt; </i>определяется атрибут <i>src</i>, значением которого может быть любая последовательность разрешенных символов:
+</p>
+<pre>
+&lt;photo src="0"/&gt;
+&lt;photo src="some text"&gt;
+</pre>
+<p align=justify>Подобно DTD, схемы данных позволяют устанавливать ограничения на значения и способ использования атрибутов. Для этого в дескрипторе &lt;attribute&gt; необходимо использовать параметр <b>atttype</b>.  
+</p>
+<p align=justify>Например, если мы хотим указать, что значение атрибута должно использоваться программой-анализатором как уникальный идентификатор, то нам необходимо создать следующее правило:
+</p>
+<pre>
+&lt;elementType id="bouquet"&gt;
+&lt;attribute name="id" atttype="ID"&gt;
+&lt;/elementType&gt;
+</pre>
+<p align=justify>Если же требуется задать список возможных значений атрибута, то пример будет выглядеть следующим образом:
+</p>
+<pre>
+&lt;attribute name="flower" atttype="ENUMERATION" 
+values="red green blue" default="red"&gt;
+</pre>
+<p align=justify>Для приведенных примеров корректным будет являться следующий фрагмент XML-документа:
+</p>
+<pre>
+&lt;bouquet id="0"&gt;
+&lt;flower color="red"&gt;rose&lt;/flower&gt;
+&lt;flower color="green"&gt;leaf&lt;/flower&gt;
+&lt;flower color="blue"&gt;bluet&lt;/flower&gt;
+&lt;/bouquet&gt;
+</pre>
+<b>Модель содержимого элемента
+</b>
+<p align=justify></b>Под моделью содержимого в схеме данных понимают описание всех допустимых объектов XML- документа, использование которых внутри данного элемента является  корректным. Модель содержимого определяется инструкциями, расположенными внутри блока &lt;elementType&gt;. 
+</p>
+<pre>
+&lt;elementType id="article"&gt;
+&lt;attribute name="id" atttype="ID"&gt;
+&lt;element type="#title"&gt;
+&lt;string/&gt;
+&lt;/elementType&gt;
+</pre>
+<p align=justify>Для этого правила корректным будет являться следующий фрагмент документа:
+</p>
+<pre>
+&lt;article id="0"&gt;
+&lt;title&gt;Психи и маньяки в Интернет&lt;/title&gt;
+&lt;/article&gt;
+</pre>
+<p align=justify>Вложенные элементы описываются при помощи инструкции <b>element</b>, в которой параметром type указывается класс объекта - ссылка на его определение:
+</p>
+<pre>
+&lt;elementType id="article"&gt;
+&lt;element type="#title"/&gt;
+&lt;element type="#author"/&gt;
+&lt;/elementType&gt;
+</pre>
+<p align=justify>Если требуется указать режим использования вложенного элемента, то надо определить параметр <b>occurs</b>:
+</p>
+<pre>
+&lt;elementType id="article"&gt;
+&lt;element type="#title" occurs="REQUIRED"/&gt;
+&lt;element type="#author" occurs="OPTIONAL"/&gt;
+&lt;element type="#subject" occurs="ONEORMORE"/&gt;
+&lt;/elementType&gt;
+</pre>
+Возможные значения этого параметра таковы:
+<UL>
+<LI>REQUIRED - элемент должен быть обязательно определен
+<LI>OPTIONAL - использование элемента не является обязательным
+<LI>ZEROORMORE - вложенный элемент может встречаться несколько раз или ни разу
+<LI>ONEORMORE - элемент должен встречаться хотя бы один раз
+</UL>
+<p align=justify>Примеры правильных XML-документа, использующих приведенную выше схему:
+</p>
+<pre>
+&lt;article&gt;
+&lt;title&gt;Зачем он нужен, XML?&lt;/title&gt;
+&lt;author&gt;Иван Петров&lt;/author&gt;
+&lt;subject&gt;Что такое XML&lt;/subject&gt;
+&lt;subject&gt;нужен ли он нам&lt;/subject&gt;
+&lt;/article&gt;
+</pre>
+или 
+<pre>
+&lt;article&gt;
+&lt;title&gt;Зачем он нужен, XML?&lt;/title&gt;
+&lt;subject&gt;Что такое XML&lt;/subject&gt;
+&lt;/article&gt;
+</pre>
+<p align=justify>Кроме элементов, содержимым XML-документа могут также является обычный текст и области CDATA. Для обозначения типов содержимого текущего элемента в схемах используются  следующие инструкции:
+<ul>
+<li><b>&lt;string/&gt; </b>- указывает на то, что содержимым элемента является только свободная текстовая информация(секция PCDATA) :
+<pre>
+&lt;elementType id="flower"&gt;
+&lt;string/&gt;
+&lt;/elementType&gt;
+</pre>
+<li><b>&lt;any/&gt; </b>- указывает на то, что содержимым элемента должны являться только элементы, без текста, незаключенного ни в один элемент:
+<pre>
+&lt;elementType id="issue"&gt;
+&lt;any/&gt;
+&lt;/elementType&gt;
+</pre>
+<li><b>&lt;mixed&gt; </b>- любое сочетание элементов и текста
+<pre>
+&lt;elementType id="contacts"&gt;
+&lt;mixed/&gt;
+&lt;/elementType&gt;
+</pre>
+<li><b>&lt;empty&gt; </b>- пустой элемент
+</ul>
+Пример:
+<pre>
+&lt;elementType id="title"&gt;
+&lt;string/&gt;
+&lt;/elementType&gt;
+&lt;elementType id="chapter"&gt;
+&lt;string/&gt;
+&lt;/elementType&gt;
+&lt;elementType id="chapters-list"&gt;
+&lt;any/&gt;
+&lt;/elementType&gt;
+&lt;elementType id="content"&gt;
+&lt;element type="#chapters-list" occurs="OPTIONAL"&gt;
+&lt;/elementType&gt;
+&lt;elementType id="article"&gt;
+&lt;mixed&gt;&lt;element type="#title"&gt;&lt;/mixed&gt;
+&lt;element type="#content" occurs="OPTIONAL"&gt;
+&lt;/elementType&gt;
+</pre>
+<p align=justify>О типах данных, которые можно определять с помощью схем, мы поговорим чуть позже
+</p>
+<b>Группировка элементов
+</b>
+<p align=justify></b>Элемент <b>group </b>используется для того, чтобы задать некоторую последовательность вложенных объектов:
+</p>
+<pre>
+&lt;elementType id="contacts"&gt;
+&lt;element type="#tel" occurs="ONEORMORE"&gt;
+&lt;group occurs="OPTIONAL"&gt;
+&lt;element type="#email"&gt;
+&lt;element type="#url"&gt;
+&lt;/group&gt;
+&lt;/elementType&gt;
+</pre>
+<p align=justify>Группировка объектов позволяет определять сразу группу объектов различных типов, которые могут находится внутри данного объекта. В приведенном примере мы указали, что внутри объекта типа contacts могут быть включены элементы <i>tel, email</i>, и <i>url</i>, причем атрибутом occurs мы указали, что элементы в группе  являются необязательными. Корректным для таких схем будут являться следующие фрагменты документов:
+</p>
+<pre>
+&lt;contacts&gt;
+&lt;tel&gt;12-12-12&lt;/tel&gt;
+&lt;email&gt;info@j.com&lt;/email&gt;
+&lt;url&gt;http://www.j.com&lt;/url&gt;
+&lt;/contacts&gt;
+...
+&lt;contacts&gt;
+&lt;tel&gt;12-12-12&lt;/tel&gt;
+&lt;/contacts&gt;
+...
+&lt;contacts&gt;
+&lt;tel&gt;12-12-12&lt;/tel&gt;
+&lt;email&gt;info@j.com&lt;/email&gt;
+&lt;/contacts&gt;
+</pre>
+<p align=justify>При помощи атрибута <b>groupOrder </b>можно также задавать режим использования группированных элементов При установленном значении OR возможно использование не всех элементов группы, а лишь некоторых из них. Если задано значение AND, то оба элемента должны быть включены в обязательном порядке. Например, для следующей группы правил:
+</p>
+<pre>
+&lt;elementType id="contacts"&gt;
+&lt;element type="#tel" occurs="ONEORMORE"&gt;
+&lt;group groupOrder="AND" occurs="OPTIONAL"&gt;
+&lt;element type="#email"&gt;
+&lt;element type="#url"&gt;
+&lt;/group&gt;
+&lt;/elementType&gt;
+</pre>
+будут считаться правильными только следующие варианты:
+<pre>
+&lt;contacts&gt;
+&lt;tel&gt;12-12-12&lt;/tel&gt;
+&lt;email&gt;info@j.com&lt;/email&gt;
+&lt;url&gt;http://www.j.com&lt;/url&gt;
+&lt;/contacts&gt;
+</pre>
+или
+<pre>
+&lt;contacts&gt;
+&lt;tel&gt;12-12-12&lt;/tel&gt;
+&lt;/contacts&gt;
+</pre>
+<b>Закрытая и открытая модели описания содержимого элемента 
+</b>
+<p align=justify></b>Когда мы определяем модель содержимого текущего элемента, список дополнительных допустимых элементов правилами не ограничивается - он может свободно расширяться. Например, для приведенного выше правила, кроме обозначенных элементов &lt;tel&gt;,&lt;url&gt; и &lt;email&gt; вполне могут использоваться дополнительные элементы, неописанные правилами, например, &lt;fax&gt;:
+</p>
+<pre>
+&lt;contacts&gt;
+&lt;tel&gt;12-12-12&lt;/tel&gt;
+&lt;fax&gt;21-21-21&lt;/fax&gt;
+&lt;email&gt;info@j.com&lt;/email&gt;
+&lt;url&gt;http://www.j.com&lt;/url&gt;
+&lt;/contacts&gt;
+</pre>
+<p align=justify>Однако в том случае, если мы хотим ограничить создаваемые нами правила от включения дополнительных элементов, мы должны использовать атрибут content и установить для него специальное значение CLOSED:
+</p>
+<pre>
+&lt;elementType id="contacts" content="CLOSED"&gt;
+&lt;element type="#tel"&gt;
+&lt;element type="#email"&gt;
+&lt;element type="#url"&gt;
+&lt;/elementType&gt;
+</pre>
+<p align=justify>Теперь приведенный фрагмент XML-документа будет считаться некорректным, т.к. параметром content запрещено использование внутри элемента <i>contacts </i>других объектов, кроме указанных в правиле. 
+</p>
+<b>Иерархия классов</b>
+<p align=justify></b>Для того, чтобы при описании класса ограничить список объектов, которые могут являться родительскими для данного элемента, необходимо использовать элемент схемы <b>domain</b>. 
+</p>
+<p align=justify>Инструкция &lt;domain&gt; указывает, что текущий объект должен определяться строго внутри элемента, заданного этим тэгом. Например, в следующем фрагменте указывается, что элемент &lt;author&gt; может быть определен строго внутри тэга &lt;article&gt;:
+</p>
+<pre>
+&lt;elementType id="author"&gt;
+&lt;element type="#lastname"&gt;
+&lt;element type="#firstname"&gt;
+&lt;domain type="#article"/&gt;
+&lt;/elementType&gt;
+</pre>
+<b>Ограничения на значения
+</b>
+<p align=justify></b>Значения элементов могут быть ограничены при помощи тэгов <b>&lt;min&gt; </b>и <b>&lt;max&gt</b>;:</b>
+</p>
+<pre>
+&lt;elementType id="room"&gt;
+&lt;element type="#floor"&gt;&lt;min&gt;0&lt;/min&gt;&lt;max&gt;100&lt;/max&gt;
+&lt;/elementType&gt;
+</pre>
+<p align=justify>Внутри этих элементов могут указываться и символьные ограничения:
+</p>
+<pre>
+&lt;elementType id="line"&gt;
+&lt;element type="#character"&gt;&lt;min&gt;A&lt;/min&gt;&lt;max&gt;Z&lt;/max&gt;
+&lt;/elementType&gt;
+</pre>
+<b>Использование правил из внешних схем
+</b>
+<p align=justify></b>Схема может использовать элементы и атрибуты из других схем. Для этого надо использовать атрибут href, в котором указывается название внешней схемы. Например:
+</p>
+<pre>
+&lt;?XML version='1.0' ?&gt;
+&lt;?xml:namespace name="urn:uuid:BDC6E3F0-6DA3-11d1-
+A2A3-00AA00C14882/" as="s"/?&gt;
+&lt;s:schema&gt; 
+&lt;elementType id="author"&gt;
+ &lt;string/&gt; 
+&lt;/elementType&gt; 
+&lt;elementType id="title"&gt;
+&lt;string/&gt; 
+&lt;/elementType&gt;
+&lt;elementType id="Book"&gt; 
+&lt;element type="#title" occurs="OPTIONAL"/&gt; 
+&lt;element type="#author" occurs="ONEORMORE"/&gt; 
+&lt;element href="http://mrcpk.org/" /&gt;
+ &lt;/elementType&gt;&lt;/s:schema&gt;
+&lt;/elementType&gt;
+&lt;/s:schema&gt;
+</pre>
+<b>Компоненты схем</b>
+<p align=justify></b>Компоненты, или макроопределении, используются в схемах точно также, как и в DTD. Для их определения предназначены тэги <b>&lt;intEntityDcl/&gt; </b>и <b>&lt;extEntityDcl/&gt</b>;:</b>
+</p>
+<pre>
+&lt;intEntityDcl name="MRCPK"&gt;
+Новосибирский Межотраслевой Региональный Центр 
+Переподготовки Кадров
+&lt;/intEntityDcl&gt;
+&lt;extEntityDcl name="logo" notation="#gif"
+ systemId="http://www.mrcpk.nstu.ru/logo.gif"/&gt;
+</pre>
+<b>Типы данных</b>
+<p align=justify></b>В разделе, посвященном DTD, мы уже выяснили, для чего программе-клиенту необходима информация о формате данных содержимого элемента. В схемах существует возможность задавать тот или иной тип  данных, используя при определении элемента директиву <b>&lt;datatype&gt; </b>с указанием конкретного типа: 
+</p>
+<pre>
+&lt;elementType id="counter"&gt;
+&lt;datatype dt="int"&gt;
+ &lt;/elementType&gt;
+</pre>
+<p align=justify>В DTD мы должны были создать атрибут с конкретным названием, определяющим операцию назначения формата данных, и значением, определенным как <i>fixed </i>.Использование элемента &lt;datatype&gt; позволяет указывать это автоматически, но для обеспечения программной независимости   необходимо сначала договориться об обозначениях типов данных(значения, которые должны передаваться параметру dt элемента dataype), для чего могут использоваться, например, универсальные идентификаторы ресурсов URI. В любом случае, как и прежде, все необходимые действия, связанные с конкретной интерпретацией данных, содержащихся в документе, осуществляются программой-клиентом и определяются логикой его работы. В разделе, посвященном DTD, мы уже рассматривали пример XML- документа, реализующего описанные нами возможности. Вот как выглядел бы этот пример при использовании схем данных:
+</p>
+<pre>
+&lt;schema id="someschema"&gt;
+&lt;elementType id="#rooms_num"&gt;
+&lt;string/&gt;
+&lt;datatype dt="int"&gt;
+&lt;/schema&gt;
+&lt;elementType id="#floor"&gt;
+&lt;string/&gt;
+&lt;datatype dt="int"&gt;
+&lt;/schema&gt;
+&lt;elementType id="#living_space"&gt;
+&lt;string/&gt;
+&lt;datatype dt="float"&gt;
+&lt;/schema&gt;
+&lt;elementType id="#is_tel"&gt;
+&lt;string/&gt;
+&lt;datatype dt="boolean"&gt;
+&lt;/schema&gt;
+&lt;elementType id="#counter"&gt;
+&lt;string/&gt;
+&lt;datatype dt="float"&gt;
+&lt;/schema&gt;
+&lt;elementType id="#price"&gt;
+&lt;string/&gt;
+&lt;datatype dt="float"&gt;
+&lt;/schema&gt;
+&lt;elementType id="#comments"&gt;
+&lt;string/&gt;
+&lt;datatype dt="string"&gt;
+&lt;/schema&gt;
+&lt;elementType id="#house"&gt;
+&lt;element type="#rooms_num" occurs="ONEORMORE"/&gt; 
+&lt;element type="#floor" occurs="ONEORMORE"/&gt; 
+&lt;element type="#living_space" occurs="ONEORMORE"/&gt; 
+&lt;element type="#is_tel" occurs="OPTIONAL"/&gt; 
+&lt;element type="#counter" occurs="ONEORMORE"/&gt; 
+&lt;element type="#price" occurs="ONEORMORE"/&gt; 
+&lt;element type="#comments" occurs="OPTIONAL"/&gt; 
+&lt;/elementType&gt;
+&lt;/schema&gt;
+ ...
+&lt;house id="0"&gt;
+&lt;rooms_num&gt;5&lt;/rooms_num&gt;
+&lt;floor&gt;2&lt;/floor&gt;
+&lt;living_space&gt;32.5&lt;/living_space&gt;
+&lt;is_tel&gt;true&lt;/is_tel&gt;
+&lt;counter&gt;18346&lt;/counter&gt;
+&lt;price&gt;34.28&lt;/price&gt;
+&lt;comments&gt;С видом на cеверный полюс&lt;/comments&gt;
+&lt;/house&gt;
+...
+</pre>
+<p align=justify>Подводя итог всему сказанному, необходимо отметить, что процесс развития современных информационных систем настолько динамичен, что временной промежуток между появлением новой технологии и ее практическим использованием в реально действующих приложениях сегодня слишком мал. На смену устаревающему стандарту HTML в самое ближайшее время должен будет прийти новый, более гибкий и универсальный язык описания данных. И тот факт, что XML как язык еще не стандартизирован и некоторые его составляющие до сих пор находятся в стадии разработки, видимо, не является причиной невозможности его использования уже сегодня, для решения конкретных задач  в реальных системах. Примером этому может служить возникновение огромного количества языков описания документов, некоторые из которых приведены в Приложении
+</p>
+<p align=justify>В этой статье были рассмотрены лишь самые основные аспекты, касающиеся новой XML- технологии.  В будущем, мы, возможно, остановимся несколько подробнее на  производных от XML языках описания данных - SMIL, RDF, MathML, механизмах описания пространства имен и рассмотрим некоторые вопросы, касающиеся создания программ-анализаторов для этих языков.
+</p>
+<p><center><p>
+<font size=-1>
+<a href="part4.html">Назад</a> | <a href="index.html">Содержание</a> | <a href="app1.html">Вперед</a></font></center></p>
+
+</body></html>

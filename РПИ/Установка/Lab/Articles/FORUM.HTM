@@ -1,0 +1,153 @@
+<html><head>
+<title>Форум на вашем сервере | WebClub</title>
+<meta http-equiv=keywords name=keywords content="WC,Web Club,webclub,forum,conference,setup,настройка,форум">
+<meta http-equiv=description name=description content="Форум на вашем сервере, Статья, Март, 1998">
+
+<link rel="stylesheet" href="/site/site.css" type="text/css">
+
+</head>
+<body background="../fon.jpg">
+<h4 align="center"><font size="3">Форум</font></h4>
+<P><font size="2">Форум в этой статье мы будем понимать как собрание сообщений 
+  на доске объявлений - похоже на конференции UseNet (в российском народе до недавнего 
+  времени более известные как Релкомовские) </font>
+<P><font size="2">Молчаливо предполагаем, что у вас "правильный" сервер - а именно: 
+  </font>
+<UL>
+  <LI><font size="2"> UNIX-подобная ОС. Я не чувствую разочарований от <A HREF="http://www.freebsd.org/">FreeBSD</A> 
+    и <A HREF="http://www.linux.org/">Linux</A>, тем более что у нас в Питере 
+    их можно купить в Доме Книги по сходной цене на дисках от <A HREF="http://www.usoft.spb.ru/">УрбанСофт</A>.</font></LI>
+  <LI><font size="2"> Apache - он берется с тех же дисков или <A HREF="http://www.apache.org/">http://www.apache.org/</A>.</font></LI>
+  <LI><font size="2"> Perl 4 и выше - все с тех же дисков, или можно поползать 
+    по <A HREF="http://www.perl.com/">http://www.perl.com/</A> и <A HREF="http://www.perl.org/">http://www.perl.org/</A></font></LI>
+</UL>
+<font size="2">Пересматривая список, вспоминаю, что при некоторой сноровке можно 
+поставить форум и под NT (если, конечно, будет желание взгромоздить на это чудо 
+Perl и Apache). Но, предупреждаю честно - я не пробовал :) </font> 
+<P><font size="2">В этой статье мы рассмотрим организацию форумов с помощью скрипта 
+  WWWBoard от Matt Wright. Он лежит на страничке <A HREF="http://www.worldwidemart.com/scripts/wwwboard.shtml">http://www.worldwidemart.com/scripts/wwwboard.shtml</A> 
+  . </font>
+<P><font size="2">Перекачиваем файл <B>wwwboard.tar.gz</B> на наш сервер во временный 
+  каталог на сервере и <BR>
+  запускаем либо "gzip -d wwwboard.tar.gz ; tar xvf wwwboard.tar", либо "tar xzvf 
+  wwwboard.tar.gz" - под Windows у меня заработала только первая последовательность. 
+  </font>
+<P><font size="2">Имеем новый каталог WWWBoard со следующим содержимым: <BR>
+  &nbsp; </font>
+<TABLE BORDER COLS=2 WIDTH="100%" >
+  <TR> 
+    <TD><font size="2">messages/</font></TD>
+    <TD><font size="2">каталог для сообщений</font></TD>
+  </TR>
+  <TR> 
+    <TD><font size="2">ADMIN_README</font></TD>
+    <TD><font size="2">информация по настройке администрирования - wwwadmin.pl</font></TD>
+  </TR>
+  <TR> 
+    <TD><font size="2">ALPHA-2</font></TD>
+    <TD><font size="2">"Авторы ответственности не несут..."</font></TD>
+  </TR>
+  <TR> 
+    <TD><font size="2">data.txt</font></TD>
+    <TD><font size="2">хранит номер последнего сообщения</font></TD>
+  </TR>
+  <TR> 
+    <TD><font size="2">faq.html</font></TD>
+    <TD><font size="2">страничка подсказки</font></TD>
+  </TR>
+  <TR> 
+    <TD><font size="2">passwd.txt</font></TD>
+    <TD><font size="2">файл с логином/паролем администратора форума</font></TD>
+  </TR>
+  <TR> 
+    <TD><font size="2">README</font></TD>
+    <TD><font size="2">README он и в Африке README - там ВСЕ написано</font></TD>
+  </TR>
+  <TR> 
+    <TD><font size="2">wwwadmin.pl</font></TD>
+    <TD><font size="2">программа администрирования</font></TD>
+  </TR>
+  <TR> 
+    <TD><font size="2">wwwboard.html</font></TD>
+    <TD><font size="2">главная страница форума</font></TD>
+  </TR>
+  <TR> 
+    <TD><font size="2">wwwboard.pl</font></TD>
+    <TD><font size="2">программа самого форума</font></TD>
+  </TR>
+</TABLE>
+<P><font size="2"> Можно углубиться в README и сделать все самому. Тогда эту статью 
+  дальше можно не читать, поскольку пойдет прямой пересказ-перевод. </font>
+<P><font size="2"><I>Параметры для примера:</I> </font>
+<UL>
+  <LI><font size="2"> имя сервера: <B>www.hell.ru</B></font></LI>
+  <LI><font size="2"> Server Root: <B>/home/httpd/docs</B></font></LI>
+  <LI><font size="2"> CGI-bin: <B>/home/httpd/cgi-bin</B></font></LI>
+  <LI><font size="2"> каталог с форумом: <B>/home/httpd/docs/wwwboard</B></font></LI>
+</UL>
+<font size="2"><I>Настройка файлов</I> </font> 
+<P><font size="2"><B>WWWBOARD.PL</B> <BR>
+  Или поместите его в ваш каталог cgi-bin, или, если ваш сервер разрешает выполнение 
+  .cgi файлов - просто переименуйте его в wwwboard.cgi, поменяв соответственно 
+  переменную $cgi_url. <BR>
+  Также необходимо выполнить команду "chmod 755 wwwboard.pl" - всем дать права 
+  на чтение-выполнение, а владельцу (webmaster) - на чтение-выполнение-запись. 
+  Хотя, думаю, что если webuser и webmaster состоят в одной группе, то более разумным 
+  будет "chmod 750 wwwboard.pl" </font>
+<P><font size="2">Подредактируйте переменные в начале программы: </font>
+<P><font size="2">$basedir = "/путь/к/форуму"; <BR>
+  Абсолютный путь к корневому каталогу вашего форума, например "/home/httpd/docs/wwwboard". 
+  <BR>
+  Это адрес форума "изнутри". </font>
+<P><font size="2">$baseurl = "http://ваш.сайт.ru/форум" <BR>
+  А это адрес форума "снаружи", в нашем случае - "http://www.hell.ru/wwwboard". 
+  </font>
+<P><font size="2">$cgi_url = "http://ваш.сервер.ru/адрес/программы" <BR>
+  URL программы, выполняющей всю черную работу. у нас - "http://www.hell.ru/cgi-bin/wwwboard.pl" 
+  </font>
+<P><font size="2">$mesgdir = "messages" <BR>
+  Название подкаталога, в котором хранятся сами сообщения. Будет прицепляться 
+  к $basedir. </font>
+<P><font size="2">$datafile = "data.txt" <BR>
+  Название файла с данными - тоже прицепляется к $basedir. </font>
+<P><font size="2">$mesgfile = "wwwboard.html" <BR>
+  Имя файла, содержащего главную страницу </font>
+<P><font size="2">$faqfile = "faq.html" <BR>
+  Имя файла с подсказкой </font>
+<P><font size="2">$ext = "html" <BR>
+  Расширение, которое будет даваться вновь создаваемым файлам сообщений </font>
+<P><font size="2">$date_command = "/bin/date" <BR>
+  Команда для выдачи даты - необходимо для датирования сообщений </font>
+<P><font size="2">$title = "Название вашего форума" <BR>
+  Эта строка будет показываться в заголовке отдельных сообщений </font>
+<P><font size="2">Далее идут несколько опций, которые начинающий пользователь 
+  может оставить как есть. <BR>
+  Все. Сконфигурировали. Теперь положим этот файл туда, где он должен лежать - 
+  наверное, в cgi-bin. </font>
+<P><font size="2"><B>WWWBOARD.HTML</B> </font>
+<P><font size="2">Все и так ясно - слегка подредактировать заголовки и часть ACTION 
+  в теге &lt;FORM>. <BR>
+  Положим куда надо и по инструкции - "chmod 777 wwwboard.html", а по-моему - 
+  "chmod 666 wwwboard.html", или если webuser и webmaster в одной группе - то 
+  "chmod 660 wwwboard.html". При всем моем уважении к Матту, я никак не пойму, 
+  зачем давать права на запуск HTML ??? </font>
+<P><font size="2"><B>FAQ.HTML</B> </font>
+<P><font size="2">Должен быть положен куда надо ($faq_file), и "chmod 744 faq.html" 
+  <BR>
+  &nbsp; </font>
+<P><font size="2"><B>MESSAGES/</B> </font>
+<P><font size="2">Должен быть создан в каталоге $basedir командой "mkdir messages". 
+  Потом - "chmod 777 messages" <BR>
+  Мое мнение - если webuser и webmaster в одной группе - то  "chmod 770 messages" 
+  <BR>
+  &nbsp; </font>
+<P><font size="2"><B>DATA.TXT</B> </font>
+<P><font size="2">Поместите его в $basedirb "chmod 777 data.txt". Здесь мое мнение 
+  - опять же не больше чем "chmod 666 data.txt", а если webuser и webmaster в 
+  одной группе - то "chmod 660 data.txt" </font>
+<P><font size="2">Вот,собственно, и все :) Пробуйте. </font>
+<P><font size="2">Программа wwwadmin.pl конфигурируется аналогичным образом. А 
+  вот логин/пароль я не скажу :) ищите сами в ADMIN-README :) <!-- Footer --> 
+  </font>
+</body></html>
+

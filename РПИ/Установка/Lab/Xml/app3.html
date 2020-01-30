@@ -1,0 +1,227 @@
+<html>
+<head>
+
+<title>Язык XML. Пример XSL-документа</title>
+</head>
+<body background="../fon.gif">
+<p><div align="center"><b>Приложение 3</b></div></p><font size="-1">
+
+<b>Пример XSL-документа</b>
+<pre>
+&lt;xsl&gt;
+&lt;!-- Корневое  правило --&gt;
+&lt;rule&gt;
+    &lt;root/&gt;      
+    &lt;HTML&gt;&lt;HEAD&gt;    &lt;!-- Область сценария--&gt;   
+       &lt;SCRIPT LANGUAGE="JSCRIPT"&gt;&lt;![CDATA[
+var ie4=((navigator.appName=="Microsoft Internet Explorer")&&(parseInt(navigator.appVersion)  &gt;= 4 ));
+       function msover(){
+if (ie4){
+  		event.srcElement.style.color="red";
+  		event.srcElement.style.cursor = "hand";
+  	}
+}
+       function msout(){
+	if (ie4){
+  		event.srcElement.style.color="black";
+  		event.srcElement.style.cursor = "auto";
+  	}
+}        ]]&gt;&lt;/SCRIPT&gt;
+    &lt;/HEAD&gt;
+    &lt;BODY bgcolor="white"&gt;
+    &lt;center&gt;
+    &lt;table width="80%" border="1"&gt;
+    &lt;children/&gt;  		
+    &lt;/table&gt;&lt;/center&gt;
+    &lt;/BODY&gt;
+    &lt;/HTML&gt;	   
+&lt;/rule&gt;
+&lt;!--   Использование элемента select-elements --&gt;
+  &lt;rule&gt;
+    &lt;target-element type="journal"/&gt;
+      &lt;select-elements&gt; &lt;target-element type="title"/&gt; &lt;/select-elements&gt;,
+      &lt;select-elements&gt; &lt;target-element type="contacts"/&gt; &lt;/select-elements&gt;,
+      &lt;select-elements&gt; &lt;target-element type="issues-list"/&gt; &lt;/select-elements&gt;,
+      &lt;select-elements&gt; &lt;target-element type="authors-list"/&gt; &lt;/select-elements&gt;.
+  &lt;/rule&gt;
+&lt;!-- Formatting title element --&gt;
+&lt;rule&gt;
+ 	 &lt;element type="journal"&gt;
+	    &lt;target-element type="title"/&gt;
+		&lt;!--  Элемент title должен определяться внутри элемента journal   --&gt;
+         &lt;/element&gt;
+        &lt;tr&gt;&lt;td align="center"&gt;&lt;center&gt;
+	&lt;table width="80%" border="1"&gt;&lt;tr&gt;&lt;td width="100%"&gt;
+	&lt;b&gt;&lt;font color="blue"&gt;
+	&lt;children/&gt;
+	&lt;/font&gt;&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+	&lt;/table&gt;&lt;/center&gt;
+        &lt;/td&gt;&lt;/tr&gt;
+&lt;/rule&gt;
+&lt;!-- Issues list --&gt;
+&lt;rule&gt;
+&lt;element type="journal"&gt;
+		&lt;target-element type="issues-list"/&gt;
+&lt;/element&gt;
+        &lt;tr&gt;&lt;td align="center"&gt;
+	&lt;children/&gt;
+	&lt;/td&gt;&lt;/tr&gt;
+&lt;/rule&gt;
+&lt;rule&gt;
+	&lt;element type="issues-list"&gt;
+		&lt;target-element type="issue"/&gt;
+        &lt;/element&gt;
+        &lt;tr&gt;&lt;td&gt;&lt;center&gt;
+        &lt;table width="100%" border="0"&gt;
+	&lt;tr&gt;&lt;td colspan="2" bgcolor="gray"&gt;
+	&lt;font color="white"&gt;Issues list&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+	&lt;children/&gt;
+	&lt;tr&gt;&lt;td&gt;&nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/center&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/rule&gt;
+&lt;rule&gt;
+	&lt;target-element type="issue"/&gt;
+        &lt;tr&gt;&lt;td&gt;
+        &lt;table width="100%" border="0"&gt;
+	&lt;tr&gt;&lt;td colspan="2"&gt;Issue number
+	&lt;b&gt;&lt;eval&gt;childNumber(this);&lt;/eval&gt;&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+	&lt;children/&gt;
+	&lt;tr&gt;&lt;td&gt;&nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/rule&gt;
+&lt;rule&gt;
+	&lt;element type="issue"&gt;
+		&lt;target-element type="title"/&gt;
+		&lt;target-element type="date"/&gt;
+		&lt;target-element type="about"/&gt;
+		&lt;target-element type="home-url"/&gt;
+        &lt;/element&gt;
+        &lt;tr&gt;
+	&lt;td width="40%"&gt;&lt;font color="blue"&gt;&lt;eval&gt;tagName&lt;/eval&gt;&lt;/font&gt;&lt;/td&gt;
+	&lt;td width="60%" align="right"&gt;&lt;div align="right"&gt;&lt;b&gt;&lt;font color="red"&gt;
+	&lt;children/&gt;&lt;/font&gt;&lt;/b&gt;
+	&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/rule&gt;
+&lt;rule&gt;
+	&lt;element type="issue"&gt;
+		&lt;target-element type="articles"/&gt;
+        &lt;/element&gt;
+        &lt;tr&gt;&lt;td colspan="2" align="right" bgcolor="silver"&gt;
+	&lt;center&gt;Articles list&lt;/center&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;children/&gt;
+&lt;/rule&gt;
+&lt;rule&gt;
+	&lt;element type="articles"&gt;
+		&lt;target-element type="article"/&gt;
+        &lt;/element&gt;
+        &lt;tr&gt;&lt;td colspan="2" align="right"&gt;Article number
+	&lt;b&gt;&lt;eval&gt;childNumber(this);&lt;/eval&gt;&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+        &lt;children/&gt;
+&lt;/rule&gt;
+&lt;rule&gt;
+	&lt;element type="article"&gt;
+		&lt;target-element type="title"/&gt;
+		&lt;target-element type="url"/&gt;
+		&lt;target-element type="author"/&gt;
+        &lt;/element&gt;
+        &lt;tr&gt;
+	&lt;td width="40%"&gt;&lt;font color="maroon"&gt;&lt;eval&gt;tagName&lt;/eval&gt;&lt;/font&gt;&lt;/td&gt;
+	&lt;td width="60%" align="right"&gt;&lt;div align="right"&gt;&lt;b&gt;&lt;font color="red"&gt;
+	&lt;children/&gt;&lt;/font&gt;&lt;/b&gt;
+	&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/rule&gt;
+&lt;rule&gt;
+	&lt;target-element type="article" position="last-of-type"/&gt;
+	&lt;children/&gt;
+        &lt;tr&gt;&lt;td colspan="2" bgcolor="silver" width="100%"&gt;&nbsp;&lt;/td&gt;&lt;/tr&gt;
+&lt;/rule&gt;
+&lt;rule&gt;
+	&lt;element type="hotkeys"&gt;
+		&lt;target-element type="hotkey"/&gt;
+        &lt;/element&gt;
+        &lt;tr&gt;
+	&lt;td width="40%"&gt;&lt;font color="maroon"&gt;&lt;eval&gt;tagName&lt;/eval&gt;&lt;/font&gt;&lt;/td&gt;
+	&lt;td width="60%" align="right"&gt;&lt;div align="right"&gt;&lt;b&gt;&lt;font color="red"&gt;
+	&lt;children/&gt;&lt;/font&gt;&lt;/b&gt;
+	&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/rule&gt;
+&lt;!-- Contacts --&gt;
+&lt;rule&gt;
+	&lt;element type="journal"&gt;
+	&lt;target-element type="contacts"/&gt;
+	&lt;select-elements&gt; &lt;target-element type="address"/&gt; &lt;/select-elements&gt;,
+	&lt;select-elements&gt; &lt;target-element type="tel"/&gt; &lt;/select-elements&gt;,
+	&lt;select-elements&gt; &lt;target-element type="email"/&gt; &lt;/select-elements&gt;,
+	&lt;select-elements&gt; &lt;target-element type="url"/&gt; &lt;/select-elements&gt;.
+        &lt;/element&gt;
+        &lt;tr&gt;&lt;td&gt;&lt;center&gt;&lt;table width="100%" border="1"&gt;
+	&lt;tr&gt;&lt;td colspan="2" bgcolor="gray"&gt;&lt;font color="white"&gt;Contact us:&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+	&lt;children/&gt;
+	&lt;tr&gt;&lt;td&gt;&nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/center&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/rule&gt;
+&lt;rule&gt;
+	&lt;element type="contacts"&gt;
+		&lt;target-element type="address"/&gt;
+		&lt;target-element type="tel"/&gt;
+		&lt;target-element type="email"/&gt;
+		&lt;target-element type="url"/&gt;
+        &lt;/element&gt;
+        &lt;tr&gt;
+	&lt;td width="40%"&gt;&lt;font color="blue"&gt;&lt;eval&gt;tagName&lt;/eval&gt;&lt;/font&gt;&lt;/td&gt;
+	&lt;td width="60%" align="right"&gt;&lt;div align="right"&gt;&lt;b&gt;&lt;font color="red"&gt;
+	&lt;children/&gt;&lt;/font&gt;&lt;/b&gt;
+	&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/rule&gt;
+&lt;!-- Authors --&gt;
+&lt;rule&gt;
+	&lt;element type="journal"&gt;
+		&lt;target-element type="authors-list"/&gt;
+        &lt;/element&gt;
+       	&lt;tr&gt;&lt;td bgcolor="gray"&gt;&lt;font color="white"&gt;Authors list&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;
+	&lt;tr&gt;&lt;td&gt;
+        &lt;children/&gt;
+	&lt;/td&gt;&lt;/tr&gt;
+&lt;/rule&gt;
+&lt;rule&gt;
+	&lt;element type="authors-list"&gt;
+		&lt;target-element type="author"/&gt;
+	&lt;select-elements&gt; &lt;target-element type="firstname"/&gt; &lt;/select-elements&gt;,
+	&lt;select-elements&gt; &lt;target-element type="lastname"/&gt; &lt;/select-elements&gt;,
+	&lt;select-elements&gt; &lt;target-element type="email"/&gt; &lt;/select-elements&gt;.
+        &lt;/element&gt;
+        &lt;table width="100%" border="1"&gt;
+	&lt;tr&gt;&lt;td colspan="2"&gt;Author index &nbsp;&lt;b&gt;&lt;eval&gt;getAttribute("ID");&lt;/eval&gt;&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+	&lt;children/&gt;
+	&lt;tr&gt;&lt;td&gt;&nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/rule&gt;
+&lt;rule&gt;
+	&lt;element type="author"&gt;
+      &lt;attribute name="ID" has-value="yes"/&gt;
+		&lt;target-element type="firstname"/&gt;
+		&lt;target-element type="lastname"/&gt;
+		&lt;target-element type="email"/&gt;
+        &lt;/element&gt;
+        &lt;tr&gt;
+	&lt;td width="40%"&gt;&lt;font color="blue"&gt;&lt;eval&gt;tagName&lt;/eval&gt;&lt;/font&gt;&lt;/td&gt;
+	&lt;td width="60%" align="right"&gt;&lt;b&gt;&lt;font color="black"&gt;
+&lt;!--  Подсветка элементов   --&gt; 
+            &lt;DIV id='=tagName + formatNumber(childNumber(this),"1")' background-color="marron"
+	  onmouseover='="msover("+ tagName + formatNumber(childNumber(this),1)+")"'
+	  onmouseout='="msout("+ tagName + formatNumber(childNumber(this),1)+")"'&gt;
+	&lt;children/&gt;
+	&lt;/DIV&gt;
+	&lt;/font&gt;&lt;/b&gt;
+	&lt;/td&gt;&lt;/tr&gt;
+&lt;/rule&gt;
+&lt;!-- Определение стиля. Изменение стиля комнется всех элементов title и url,
+	 вне зависимости от их месторасположения --&gt;	
+  &lt;style-rule&gt;  
+    &lt;target-element type="title"/&gt;
+    &lt;target-element type="url"/&gt;
+    &lt;apply font-style="italic" color="maroon"/&gt;
+  &lt;/style-rule&gt;
+&lt;/xsl&gt;
+</pre>
+<p><center><p>
+<font size=-1>
+<a href="app2.html">Назад</a> | <a href="index.html">Содержание</a> | <a href="app4.html">Вперед</a></font></center></p>
+
+</body></html>

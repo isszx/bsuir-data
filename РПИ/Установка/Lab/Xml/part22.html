@@ -1,0 +1,685 @@
+<html><head>
+</head>
+<body background="../fon.gif">
+<p><div align="center"><b>XML в Microsoft Internet Explorer 5.0</b></div></p><font size="-1">
+
+<p align="justify">&nbsp;&nbsp;&nbsp;Разработчики, использующие Dynamic HTML для создания динамических HTML страниц, видимо, оценят новые возможности по управлению информацией, появившейся с включением в Internet Explorer 5 поддержки DOM Level1 и стилевых таблиц XSL.</p> 
+<p align="justify">&nbsp;&nbsp;&nbsp;HTML-документы давно уже стали привычным форматом для представления информации в Web. Но, к сожалению, их содержимое практически не описывается тэгами и единственное, что может делать с данными броузер, это форматировать их и выводить на экран. Передаваемая клиенту информация в виде HTML страницы доступна для пользователя лишь в том виде, в котором она была сформирована на стороне сервера и практически невозможно динамическое изменение данных в зависимости от текущих потребностей пользователя. Впервые попытка хранения информации независимо от форматирующих ее тэгов была сделана в спецификации Dynamic HTML для IE 4 - в объектную модель броузера были добавлены т.н. объекты источников данных (<i>Data Source Object</i> - DSO). Эти объекты позволяли динамически &quot;назначать&quot; информацию для тех или иных фрагментов HTML документа(например, таблицам), которую затем отображал броузер, и являлись, по сути, &quot;островками данных&quot; для моря остальных форматирующих тэгов документа. Следующим шагом в этом направлении стало появление нового тэга &lt;xml&gt; и включение в объектную модель Internet Explorer новых объектов доступа к XML-данным.</p>
+<p align="justify">&nbsp;&nbsp;&nbsp;Говоря об объектной модели броузера необходимо уточнить, что в данном случае имеется в виду интерфейс доступа к содержимому документа для сценариев, а вовсе не часть программного обеспечения броузера. Некоторые интерфейсы доступны для других приложений и являются, по сути, COM-интерфейсами, некоторые могут использоваться только внутри. Для нас не важно, как представлены объекты в программной модели броузера - мы будем рассматривать объектную модель как набор объектов, их методов и событий, доступных для сценария внутри страницы.</p>
+<p align="justify">&nbsp;&nbsp;&nbsp;Из внутренних сценариев HTML страницы обращение к методам объекта данных выглядит также, как и для любого другого элемента документа - при помощи его идентификатора или по индексу в коллекции классов страницы. Вот например, как можно это сделать через JScript (версия  JavaScript от Microsoft):</p>
+<pre>
+ &lt;xml ID=&quot;xmlNotes&quot; src=&quot;notes.xml&quot;&gt;&lt;/xml&gt;
+ &lt;script language=JAVASCRIPT&gt;
+  var node_value = xmlNotes.document.all
+(&quot;xmlNotes&quot;).XMLDocument.nodeValue;
+  var document_text = xmlNotes.documentElement.text;
+ &lt;/script&gt;
+</pre>
+<p align="justify">&nbsp;&nbsp;&nbsp;При этом ссылка на элемент данных HTML страницы в сценарии автоматически предоставляет нам доступ к объектной модели XML документа, создаваемой обработчиком в памяти компьютера сразу после загрузки документа. 
+<p align="justify">&nbsp;&nbsp;&nbsp;В настоящий момент поддержка XML в IE5 реализована, практически, в на трех вариантах. Во-первых, это возможность загрузки XML документа, так же, как загружается обычная HTML страница. Он будет нормально обработан броузером и отображен в виде дерева содержащихся в нем элементов. 
+<p align="justify">&nbsp;&nbsp;&nbsp;Во-вторых, XML документы можно форматировать при помощи стилевых таблиц XSL. Стилевые таблицы позволяют управлять процессом отображения элемента на экране броузера, меняя в зависимости от его типа и месторасположения в документе используемые для этого форматирующие тэги. Кроме того, стилевые таблицы могут использоваться также и для поиска нужных фрагментов внутри документа, выводя по желанию пользователя отдельные его части независимо от остального содержимого. XSL инструкции в Internet Explorer 5.0 позволяют &quot;фильтровать&quot; и обрабатывать сложные XML документы, со множеством рекурсивно вложенных, сложноподчиненных  элементов с нефиксированным набором атрибутов и строгими требованиями к порядку их определения внутри документа. 
+<p align="justify">&nbsp;&nbsp;&nbsp;В-третьих, доступ к XML-данным возможен из сценариев внутри страницы, имеющих доступ практически к любому элементу документа через соответствующие объекты. Использование Dynamic HTML представляет собой наиболее гибкий и мощный способ формирования динамически изменяемой информации на стороне клиента. Структурированные данные XML-документа могут загружаться в страницу при помощи тэгов <b>&lt;xml&gt;</b>, <b>&lt;object&gt;</b> или <b>&lt;script&gt;</b>, в которых указывается либо адрес документа, либо непосредственно сами XML-элементы:
+<pre>
+&lt;xml ID=&quot;xmlNotes1&quot; src=&quot;notes.xml&quot;&gt;&lt;/xml&gt;
+...
+&lt;xml ID=&quot;xmlNotes2&quot;&gt;
+&lt;notepad&gt;
+&lt;note id=&quot;5&quot;&gt;
+&lt;text&gt;Очень важная информация&lt;/text&gt;
+&lt;/note&gt;
+&lt;/notepad&gt;
+&lt;/xml&gt;
+...
+&lt;script language=&quot;xml&quot; ID=&quot;xmlNotes3&quot;&gt;
+&lt;notepad id=&quot;6&quot;&gt;
+&lt;note&gt;
+&lt;text&gt;Очень важная информация&lt;/text&gt;
+&lt;/note&gt;
+&lt;/notepad&gt;
+&lt;/script&gt;
+...
+&lt;script language=JAVASCRIPT&gt;
+var root_node = document.all.(&quot;SCRIPT&quot;).XMLDocument;
+&lt;/script&gt;
+</pre>
+&nbsp;&nbsp;&nbsp;Возможны комбинации всех этих подходов - загрузка и обработка XML документа в сценариях через методы объектов DOM; включение стилевых таблиц в страницу при помощи тэга &lt;xml&gt;, их модификация в соответствии с запросами пользователя, назначение XSL-стилей для XML-документов прямо из сценариев,  включение фрагментов скриптов  непосредственно в XML документы при помощи блока CDATA.
+<a name="p1"></a>
+<p align="justify">&nbsp;&nbsp;&nbsp;<b>Internet Explorer DOM</b>
+<p align="justify">&nbsp;&nbsp;&nbsp;В настоящий момент Microsoft Internet Explorer является первым броузером, поддерживающим спецификацию DOM Level 1. Для сценариев на стороне клиента доступно множество объектов для работы с XML-документом. Полное их описание является темой отдельной статьи, здесь же рассмотрим лишь самые важные из них, объекты <b>XMLDOMDocument</b>, <b>XMLDOMNode</b>, <b>XMLDOMNodeList</b>, представляющие интерфейс для доступа ко всему документу, отдельным его узлам и поддеревьям соответственно. Также рассмотрим объект <b>XMLDOMParseError</b>, предоставляющий необходимую для отладки информацию о произошедших ошибках анализатора (т.к. его методы, к сожалению, на первых шагах используются очень часто). Описание дается по материалам официального руководства, расположенного на  сервере Microsoft: <a href="http://msdn.microsoft.com/xml/">msdn.microsoft.com/xml/</a>, и является упрощенным  и сокращенным его вариантом, поэтому если приведенных в таблице сведений будет недостаточно, нужно обратиться к первоисточнику. 
+<a name="p2"></a>
+<p align="justify">&nbsp;&nbsp;&nbsp;
+<TABLE BORDER=1 CELLSPACING=0 CELLPADDING=2 WIDTH="100%">
+<TR><TD VALIGN="TOP" COLSPAN=2 BGCOLOR="#c0c0c0">
+<b>Объект XMLDOMNode</b></TD>
+</TR>
+<TR><TD VALIGN="TOP" COLSPAN=2>
+Объект XMLDOMNode, реализующий базовый DOM интерфейс <b>Node</b>,  предназначен для манипулирования с отдельным узлом дерева документа. Его свойства и методы позволяют получать и изменять полную информацию о текущем узле - его тип (является ли текущий узел элементом, комментарием, текстом  и т.д.), название, полное название (вместе с Namespace префиксом), его содержимое, список дочерних элементов и т.д. </TD>
+</TR>
+<TR><TD ALIGN="RIGHT" VALIGN="TOP" COLSPAN=2 BGCOLOR="#c0c0c0">
+<font color="gray"><B>Свойства</B></font></TD>
+</TR>
+<TR><TD VALIGN="TOP" COLSPAN=2>
+<P>Общая информация о текущем элементе дерева</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>nodeName</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает полное название(вместе с Namaspace атрибутом) текущего узла в виде строки. Доступно только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>baseName </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает название элемента без префикса Namespace. Только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>prefix</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает Namespace префикс. Только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>namespaceURI </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает URI Namespace префикса текущего элемента</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>dataType </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Определяет тип содержимого текущего узла(описываемое схемами данных). Доступно для записи и чтения</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>nodeType</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает тип текущего узла:</P>
+<P>NODE_ELEMENT (1) - элемент</P>
+<P>NODE_ATTRIBUTE (2) - атрибут</P>
+<P>NODE_TEXT (3) - текст</P>
+<P>NODE_CDATA_SECTION (4) - область CDATA</P>
+<P>NODE_ENTITY_REFERENCE (5) - объект ссылки на "макроподстановки"</P>
+<P>NODE_ENTITY (6) - объект ссылки на т.н. "подстановочые символы" -  <i>entity</i>"</P>
+<P>NODE_PROCESSING_INSTRUCTION (7) - область инструкций XML процессору</P>
+<P>NODE_COMMENT (8) - комментарий</P>
+<P>NODE_DOCUMENT (9)  - корневой элемент документа</P>
+<P>NODE_DOCUMENT_TYPE (10) - описание типа документа, задаваемое тэгом &lt;!DOCTYPE&gt;</P>
+<P>NODE_DOCUMENT_FRAGMENT (11) - фрагмент XML-документа - несвязанное поддерево</P>
+<P>NODE_NOTATION (12) - DTD нотация.</P>
+<P>Свойство доступно только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>nodeTypeString </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает тип узла в виде текста. Только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>attributes </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает список атрибутов текущего узла в виде коллекции XMLDOMNamedNodeMap. Если атрибутов нет, то свойство length будет содержать нулевое значение. Для тех узлов, у которых не может быть атрибутов (в XML документе они могут быть назначены лишь объектам элементов, макроподстановок и нотаций) возвращается null. Для объектов макроподстановок и нотаций содержимым коллекции будут являться атрибуты SYSTEMID, PUBLICID и NDATA. Доступно только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>definition </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает DTD определение для текущего узла дерева. </TD>
+</TR>
+<TR><TD VALIGN="TOP" COLSPAN=2>
+<P>Содержимое текущего узла</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>text</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает содержимое текущего поддерева(узла и всех его дочерних элементов). Доступно для записи и чтения</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>xml</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает XML-представление текущего поддерева. Доступно только для чтения</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>nodeValue </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает содержимое текущего узла. Доступно для чтения и записи.</TD>
+</TR>
+<TR><TD VALIGN="TOP" COLSPAN=2>
+<P>Работа со списком дочерних элементов</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>childNodes </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Для тех узлов, которые имеют дочерние элементы возвращает их список в виде XMLDOMNodeList. В том случае, если дочерних элементов нет, значение свойства length списка равно нулю . Только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>lastChild </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает последний дочерний элемент или null, если таковых не имеется. Свойство доступно только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>firstChild </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает последний дочерний элемент или null. Только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>nextSibling </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает следующий дочерний элемент. Только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>previousSibling </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает предыдущий дочерний элемент. Доступно только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>parentNode </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Содержит ссылку на родительский элемент. В том случае, когда такого элемента нет, возвращает null. Доступно только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>ownerDocument </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает указатель на документ, в котором находится текущий узел. Если в процессе модификации дерева узел будет перенесен в другой документ, то значение этого свойства автоматически изменится. Только для чтения.</TD>
+</TR>
+<TR><TD ALIGN="RIGHT" VALIGN="TOP" COLSPAN=2 BGCOLOR="#c0c0c0">
+<font color="gray"><B>Методы</B></font></TD>
+</TR>
+<TR><TD VALIGN="TOP" COLSPAN=2>
+<P>Добавление новых элементов в объектную модель документа</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>appendChild(newChild)</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Добавляет текущему узлу новый дочерний элемент. Возвращает ссылку на объект этого нового элемента. То же самое можно сделать и при помощи insertBefore (newChild, null)</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>insertBefore(newChild, refChild) </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Вставляет дочерний узел, располагая его в текущем поддереве "левее" узла, указанного параметром refChild. Если последний параметр не задан, то новый узел будет добавлен в конец списка. </TD>
+</TR>
+<TR><TD VALIGN="TOP" COLSPAN=2>
+<P>Модификация и удаление узлов</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>cloneNode (deep)</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Создание копии текущего элемента. Параметр deep определяет, будет ли эта процедура рекурсивно выполняться для всех дочерних элементов. Возвращаемое значение - ссылка на новый элемент</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>replaceChild(newChild, oldChild) </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Замена объекта oldChild текущего списка дочерних объектов на newChild. Если newChild=null, то старый объект будет просто удален.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>removeChild(oldChild) </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Удаление объекта oldChild из списка дочерних элементов</TD>
+</TR>
+<TR><TD VALIGN="TOP" COLSPAN=2>
+<P>Поиск узлов (выделение поддеревьев)</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>selectNodes
+(patternString)</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает объект XMLDOMNodeList, содержащий поддерево, выбранное по шаблону поиска pattertnString</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>selectSingleNode
+(patternString)</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Аналогичен методу selectNodes, только возвращает первый узел из найденного поддерева</TD>
+</TR>
+<TR><TD VALIGN="TOP" COLSPAN=2>
+<P>Обработка поддеревьев стилевыми таблицами</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>transformNode
+(stylesheet)</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Назначает стилевую таблицу для поддерева текущего узла и возвращает строку - результат обработки. В качестве параметра передается ссылка на объект DOMDocument, в котором находятся XSL инструкции.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>transformNodeToObject
+(stylesheet, outputObject)</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>То же, что и transformNode, только результат - обработанное дерево передается в объект XMLDocument(другое дерево), задаваемый параметром outputObject</TD>
+</TR>
+</TABLE>
+<p align="justify">&nbsp;&nbsp;&nbsp;
+<TABLE BORDER=1 CELLSPACING=0 CELLPADDING=2 WIDTH="100%">
+<TR><TD VALIGN="TOP" COLSPAN=2 BGCOLOR="#c0c0c0">
+<b>Объект XMLDOMDocument</b></TD>
+</TR>
+<TR><TD VALIGN="TOP" COLSPAN=2>
+Представляет верхний уровень объектной иерархии  и содержит методы для работы с документом: его загрузки, анализа, создания в нем элементов, атрибутов, комментариев и т.д. . Многие свойства и методы этого объекта реализованы также в рассмотренном выше класса <b>Node</b>, т.к. документ может быть рассмотрен как корневой узел с вложенными в него поддеревьями.
+</TD>
+</TR>
+<TR><TD ALIGN="RIGHT" VALIGN="TOP" COLSPAN=2 BGCOLOR="#c0c0c0">
+<font color="gray"><B>Свойства</B></font></TD>
+</TR>
+<TR><TD VALIGN="TOP" COLSPAN=2>
+<P>Получение и информации о текущем состоянии процесса загрузки и анализа документа.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>async</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Свойство, доступное для записи и чтения, идентифицирующее текущий режим обработки (синхронный или асинхронный)</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>parseError </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает ссылку на объект XMLDOMParseError, при помощи которого можно получить всю необходимую информацию о последней ошибке анализатора. Только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>readyState </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Содержит информацию о текущем состоянии анализатора:</P>
+
+<UL>
+<LI>LOADING (1) - находится в процессе загрузки документа </LI>
+<LI>LOADED (2) - загрузка завершена, но объектная модель документа еще не создана </LI>
+<LI>INTERACTIVE (3) - объектная модель создана(все элементы документа разобраны, установлены их связи и атрибуты) но доступна пока только для чтения </LI>
+<LI>COMPLETED (4) - с ошибками или без, но документ разобран</LI></UL>
+
+<P ALIGN="JUSTIFY">Для получения своевременной информации о текущем состоянии анализатора можно воспользоваться обработчиком событий <B>onreadystatechange</P>
+</B><P>Только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>ondataavailable </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Свойство, доступное только для записи, которое содержит ссылку на обработчик события ondataavailable (вызывается, когда обработчик обрабатывает очередную порцию данных документа)</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>onreadystatechange </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Ссылка на обработчик события onreadystatechange (вызывается каждый раз, когда меняется состояние обработчика - свойство readyState)</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>ontransformnode </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Ссылка на обработчик события ontransformnode (вызывается перед каждой трансформацией узла стилевыми таблицами)</TD>
+</TR>
+<TR><TD VALIGN="TOP" COLSPAN=2>
+<P>Изменение параметров обработчика.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>preserveWhiteSpace</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Определяет, должны ли при разборе документа игнорироваться символы разделителей. Если значение свойства ложно, то будут, если истина - то разделители будут сохранены. По умолчанию установлено в false. Доступно для чтения и записи.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>resolveExternals </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Свойство определяет, будут ли в процессе анализа разбираться внешние определения (DTD-описания, макроподстановки и т.д.) - значение true или нет(false). Доступно для чтения и записи.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>validateOnParse</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Включение - выключение верификации документа. Значения true или false. Доступно для чтения и записи.</TD>
+</TR>
+<TR><TD VALIGN="TOP" COLSPAN=2>
+<P>Получение информации о загруженном документе</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>doctype </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает тип документа, определяемый при его создании тэгом &lt;!DOCTYPE&gt;, включающим DTD. Если в документе нет DTD описаний, возвращается null. Только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>url </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает URL документа(в случае успешной его загрузки, в противном случае возвращает null). Доступно только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>implementation </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращет объект XMLDOMImplementation для данного документа. Только для чтения.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>documentElement </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Содержит ссылку на корневой элемент документа в виде объекта XMLDOMElement. Если корневого элемента нет, то возвращается null. Доступно для записи </TD>
+</TR>
+<TR><TD ALIGN="RIGHT" VALIGN="TOP" COLSPAN=2 BGCOLOR="#c0c0c0">
+<font color="gray"><B>Методы</B></font></TD>
+</TR>
+<TR><TD VALIGN="MIDDLE" COLSPAN=2>
+<P>Загрузка и сохранение документов</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>load(url) </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Загружает документ, адрес которого задан параметром url. В случае успеха возвращает логическое значение true. Необходимо иметь в виду, что вызов этого метода сразу же обнуляет содержимое текущего документа</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>loadXML(xmlString)</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Загружает XML - фрагмент, определенный в передаваемой строке</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>save(objTarget)</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Сохраняет документ в файле (objTarget - строка, содержащая URL файла) или внутри другого документа (objTarget - объект XMLDOMDoument). </TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>abort() </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Прерывание процесса загрузки и обработки документа. Обработчик ошибок XMLDOMParseError будет содержать в коде ошибки соответствующее значение.</TD>
+</TR>
+<TR><TD VALIGN="TOP" COLSPAN=2>
+<P>Создание новых объектов. Необходимо отметить, что все методы лишь создают указанные объекты и для включения их в объектную модель документа надо дополнительно использовать методы insertBefore, insertAfter или appendChild.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>createAttribute (name)</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Создает для текущего элемента новый атрибут с указанным именем. Новый атрибут добавляется в объектную модель документа только после определения его значения методом setAttribute.</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>createNode(Type, name, nameSpaceURI)</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Создает узел указанного типа и названия. Namespace префикс задается параметром nameSpaceURI. Возвращаемым значением будет созданный объект указанного типа. </TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>createCDATASection(data)</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Создает область CDATA - возвращает объект XMLDOMCDATASection</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>createDocumentFragment() </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Создает новый пустой фрагмента документа - объект XMLDOMDocumentFragment</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>createComment(data)</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Создает комментарий. </TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>createElement(tagName) </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Создает элемент документа с указанным названием. </TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>createEntityReference(name) </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Создает ссылку на подстановочные символы</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>createProcessingInstruction(target, data) </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Создает новую директиву XML-процессора</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>createTextNode(data) </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Создает текст внутри документа</TD>
+</TR>
+<TR><TD VALIGN="TOP" COLSPAN=2>
+<P>Поиск узлов дерева документа</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>getElementsByTagName(tagname)</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает ссылку на коллекцию элементов документа с заданным именем (или всех элементов, если значение tagname равно "*") </TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>nodeFromID(idString)</B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Поиск элемента по идентификатору</TD>
+</TR>
+<TR><TD WIDTH="37%" VALIGN="TOP">
+<B><P>hasChildNodes() </B></TD>
+<TD WIDTH="63%" VALIGN="TOP">
+<P>Возвращает истину, если текущий узел содержит поддерево.</TD>
+</TR>
+</TABLE>
+<p align="justify">&nbsp;&nbsp;&nbsp;
+<TABLE BORDER=1 CELLSPACING=0 CELLPADDING=2 WIDTH="100%">
+<TR><TD VALIGN="TOP" COLSPAN=2 BGCOLOR="#c0c0c0">
+<B>Объект XMLDOMNodeList</B></TD>
+</TR>
+<TR><TD VALIGN="TOP" COLSPAN=2>
+Представляет собой список узлов - поддеревья и содержит методы, при помощи которых можно организовать процедуру обхода дерева.
+</TR>
+<TR><TD ALIGN="RIGHT" VALIGN="TOP" COLSPAN=2 BGCOLOR="#c0c0c0">
+<font color="gray"><B>Свойства</B></font></TD>
+</TR>
+<TR><TD WIDTH="50%" VALIGN="TOP">
+<B><P>length</B></TD>
+<TD WIDTH="50%" VALIGN="TOP">
+<P>число элементов списка узлов</TD>
+</TR>
+<TR><TD ALIGN="RIGHT" VALIGN="TOP" COLSPAN=2 BGCOLOR="#c0c0c0">
+<font color="gray"><B>Методы</B></font></TD>
+</TR>
+<TR><TD WIDTH="50%" VALIGN="TOP">
+<P><B>item(i)</B></TD>
+<TD WIDTH="50%" VALIGN="TOP">
+<P>Выбор i-того элемента из списка. Возвращает объект XMLDOMNode</TD>
+</TR>
+<TR><TD WIDTH="50%" VALIGN="TOP">
+<B><P>nextNode()</B></TD>
+<TD WIDTH="50%" VALIGN="TOP">
+<P>Выбор следующего элемента в списке. Если такого элемента нет, то возвращает null. первый вызов этого метода(после сброса итератора) возвратит ссылку на первый элемент списка.</TD>
+</TR>
+<TR><TD WIDTH="50%" VALIGN="TOP">
+<B><P>reset() </B></TD>
+<TD WIDTH="50%" VALIGN="TOP">
+<P>Сброс внутреннего указателя текущего элемента</TD>
+</TR>
+</TABLE>
+<p align="justify">&nbsp;&nbsp;&nbsp;
+<TABLE BORDER=1 CELLSPACING=0 CELLPADDING=2 WIDTH="100%">
+<TR><TD VALIGN="TOP" COLSPAN=2 BGCOLOR="#c0c0c0">
+<b>Объект XMLDOMParserError</b></TD>
+</TR>
+<TR><TD VALIGN="TOP" COLSPAN=2>
+Объект позволяет получить всю необходимую информацию об ошибке, произошедшей в ходе разбора документа. Все свойства этого объекта доступны только для чтения.
+</TD>
+</TR>
+<TR><TD ALIGN="RIGHT" VALIGN="TOP" COLSPAN=2 BGCOLOR="#c0c0c0">
+<font color="gray"><B>Свойства</B></font></TD>
+</TR>
+<TR><TD WIDTH="50%" VALIGN="TOP">
+<P><B>errorCode </B></TD>
+<TD WIDTH="50%" VALIGN="TOP">
+<P>Содержит код возникшей ошибки либо 0, если таковой не случилось. </TD>
+</TR>
+<TR><TD WIDTH="50%" VALIGN="TOP">
+<B><P>url</B> </TD>
+<TD WIDTH="50%" VALIGN="TOP">
+<P>Возвращает URL обрабатываемого документа</TD>
+</TR>
+<TR><TD WIDTH="50%" VALIGN="TOP">
+<B><P>filepos</B> </TD>
+<TD WIDTH="50%" VALIGN="TOP">
+<P>Возвращает смещение относительно начала файла фрагмента, в котором обнаружена ошибка</TD>
+</TR>
+<TR><TD WIDTH="50%" VALIGN="TOP">
+<B><P>line</B> </TD>
+<TD WIDTH="50%" VALIGN="TOP">
+<P>Содержит номер строки, содержащей ошибку</TD>
+</TR>
+<TR><TD WIDTH="50%" VALIGN="TOP">
+<B><P>linepos</B> </TD>
+<TD WIDTH="50%" VALIGN="TOP">
+<P>Позицию ошибки в строкев которой была обнаружена ошибка</TD>
+</TR>
+<TR><TD WIDTH="50%" VALIGN="TOP">
+<B><P>reason</B> </TD>
+<TD WIDTH="50%" VALIGN="TOP">
+<P>Описание ошибки</TD>
+</TR>
+<TR><TD WIDTH="50%" VALIGN="TOP">
+<B><P>srcText</B> </TD>
+<TD WIDTH="50%" VALIGN="TOP">
+<P>Содержит полный текст строки, в которой произошла ошибка</TD>
+</TR>
+</TABLE>
+<a name="p3"></a>
+<p align="justify">&nbsp;&nbsp;&nbsp;Приведем некоторые примеры использования объектной модели.
+<p align="justify">&nbsp;&nbsp;&nbsp;<u>Создание объекта документа</u>
+<p align="justify">&nbsp;&nbsp;&nbsp;Работа с содержимым XML документа в DOM начинается с создания объекта, реализующего методы класса Document. В IE5 этим объектом является <b>XMLDOMDocument.</b> Создание объекта из сценариев осуществляется при помощи стандартных методов  new ActiveXObject(JScript) и CreateObject:
+<pre>
+&lt;script language=&quot;JScript&quot;&gt; 
+ var docobj = new ActiveXObject(&quot;Microsoft.XMLDOM&quot;); 
+...
+</pre>
+и
+<pre>
+&lt;script language=&quot;VBScript&quot;&gt; 
+Dim docobj
+Set docobj = CreateObject(&quot;Microsoft.XMLDOM&quot;).
+... 
+</pre></i>
+<p align="justify">&nbsp;&nbsp;&nbsp;Если данные включаются в документ в виде DSO-объектов, то для доступа к документу можно также использовать объектную модель HTMLстраницы, получая ссылку на XML-документ по идентификаторам соответствующих тэгов:
+<pre>
+&lt;XML id=&quot;source&quot; src=&quot;source-file.xml&quot;&gt;&lt;/XML&gt;
+&lt;XML id=&quot;style&quot; src=&quot;style-file.xsl&quot;&gt;&lt;/XML&gt;
+&lt;SCRIPT FOR=&quot;window&quot; EVENT=&quot;onload&quot;&gt;
+   xslArea.innerHTML = 
+   source.transformNode(style.XMLDocument);
+&lt;/SCRIPT&gt;
+...
+&lt;DIV id=&quot;xslArea&quot;&gt;&lt;/DIV&gt;
+</pre>
+<p align="justify">&nbsp;&nbsp;&nbsp;Первым способом создаются объекты при &quot;ручной&quot;загрузке нового документа. Если же мы хотим получить доступ к данным, встроенным в страницу при помощи тэгов <b>xml</b> или <b>object</b>, то используется второй способ.</p>
+<p align="justify">&nbsp;&nbsp;&nbsp;Объектной переменной <b>XMLDOMDocument</b> также можно присвоить ссылку на другой объект  созданного раннее документа:</p>
+<p align="justify">&nbsp;&nbsp;&nbsp; <i>docobj.documentElement = otherobj;</i>
+<p align="justify">&nbsp;&nbsp;&nbsp;<u>Загрузка XML-документа</u>
+<p align="justify">&nbsp;&nbsp;&nbsp;Все необходимые манипуляции с XML документом осуществляются после его загрузки и создания дерева элементов. Загрузка может осуществляться либо при помощи указателя на соответствующий ресурс: <i>docobj.load(&quot;http://myserver/xml/notes.xml&quot;)</i>, либо &quot;на лету&quot;, при помощи метода <b>loadXML</b>, которому в качестве параметра передается строка- отрывок XML документа:
+<p align="justify">&nbsp;&nbsp;&nbsp;<i>docobj.loadXML(&quot;&lt;recipe&gt;&lt;step id='1'&gt;Насыпать чай&lt;/step&gt;&lt;step id='2'&gt;Залить кипятком &lt;/step&gt; &lt;step id='3'&gt;Вылить&lt;/step&gt;&lt;/recipe&gt;&quot;);</i>
+<p align="justify">&nbsp;&nbsp;&nbsp;<u>Анализ документа</u>
+<p align="justify">&nbsp;&nbsp;&nbsp;Для управления процессом анализа документа можно изменять следующие рассмотренные ранее свойства <b>XMLDOMObject</b> : <b>async</b>, <b>validateOnParse</b>, <b>resolveExternals</b>, <b>preserveWhiteSpaces</b>.
+<p align="justify">&nbsp;&nbsp;&nbsp;Необходимо запомнить, что анализ XML документа производится непосредственно после  загрузки  его содержимого - остановить этот процесс можно только используя метод <b>abort</b>. Поэтому свойства обработчика нужно изменять перед его загрузкой. 
+<p align="justify">&nbsp;&nbsp;&nbsp;В процессе анализа документа обработчиком могут вызываться некоторые события, перехватывая которые можно отслеживать все шаги обработки. Для назначения классов обработчиков используются свойства , описанные  в таблице. Вот пример программы-обработчика события , возникающего при изменении текущего состояния анализатора.
+<pre>&lt;script&gt;
+ var xmldoc;
+ var messages = new Array(5);
+ var result_str = &quot; Демонстрация
+  обработки событий&lt;hr/&gt;&quot;;
+ messages[0]=&quot;Загрузка документа.&quot;;
+ messages[1]=&quot;Загрузка завершена.
+  Начинаю анализ документа&quot;;
+ messages[2]=&quot;Начинаю создание объектной модели&quot;;
+ messages[3]=&quot;Обработку завершил&quot;;
+
+ function startParse(url){
+  xmldoc = new ActiveXObject(&quot;Microsoft.XMLDOM&quot;); 
+  xmldoc.onreadystatechange = onChangeState; 
+  xmldoc.load(url);
+  xmlMessages.innerHTML = result_str;
+ } 
+ 
+ function onChangeState(){ 
+  var state = xmldoc.readyState; 
+  result_str += messages[state-1] + &quot;&lt;BR&gt;&quot;; 
+}
+&lt;/script&gt;
+
+&lt;BODY onLoad=&quot;startParse('notepad.xml')&quot;&gt;
+    &lt;DIV id=&quot;xmlMessages&quot;&gt;&lt;/DIV&gt;
+&lt;/BODY&gt;
+</pre>
+<p align="justify">&nbsp;&nbsp;&nbsp;Другой способ назначить обработчик событий для элемента  - это использование атрибута event тэга <b>&lt;script&gt;</b>:
+<pre>
+&lt;XML id=&quot;xmlID&quot; src=&quot;notes.xml&quot;&gt;&lt;/XML&gt;
+ &lt;script for=&quot;xmlID&quot; event=&quot;onreadystatechange&quot;&gt;
+ alert(xmlID.readyState);
+ &lt;/script&gt;
+</pre>
+<p align="justify">&nbsp;&nbsp;&nbsp;<u>Обработка ошибок</u>
+<p align="justify">&nbsp;&nbsp;&nbsp;Информация об обнаруженных в результате разбора XML-документа ошибках передается сценарию через объект <b>XMLDOMParseError</b>. Ссылку на него возвращает метод parseError объекта <b>XMLDOMDocument</b>. Узнать о типе ошибки можно по ее коду, содержащемся в свойстве <b>errorCode</b> (если разбор закончился успешно, то значение errorCode равно 0). При помощи свойств <b>filepos</b>, <b>line</b>, <b>linepos</b>, <b>reason</b>, <b>srcText</b> и <b>url</b> можно получить полную информацию о причине появления ошибки и ее местонахождении.
+<pre>
+&lt;SCRIPT language=&quot;JavaScript&quot;&gt;
+var docobj;
+var result_str = &quot;&lt;hr/&gt;&quot;;
+
+function view(){
+docobj = new ActiveXObject(&quot;Microsoft.XMLDOM&quot;); 
+docobj.load(&quot;music.xml&quot;);
+
+    if (docobj.parseError.errorCode != 0){
+     xmlTree.innerHTML=reportParseError
+	 (docobj.parseError);
+     return;
+}
+xmlTree.innerHTML = docobj.xml;
+}
+
+function reportParseError(error){
+ error_str  = &quot;&lt;H4&gt;Ошибка при загрузке документа '&quot;
+  +      error.url + &quot;'&lt;/H4&gt;&quot; +
+      &quot;&lt;p&gt;&lt;font color='red'&gt;&quot; + error.reason + 
+	      &quot;&lt;/font&gt;&lt;/p&gt;&quot;;
+  if (error.line &gt; 0)
+    error_str += &quot;&lt;H5&gt;&quot; +    &quot;Строка &quot;
+	 + error.line + &quot;, символ &quot; + error.linepos +
+    &quot;\n&quot; + error.srcText +   &quot;&lt;/H4&gt;&quot;;
+  return error_str;
+
+}
+
+&lt;/script&gt;
+  &lt;BODY onLoad=&quot;startParse()&quot;&gt;
+    &lt;DIV id=&quot;xmlTree&quot;&gt;&lt;/DIV&gt;
+  &lt;/BODY&gt;
+  &lt;/HTML&gt;
+...
+</pre>
+<p align="justify">&nbsp;&nbsp;&nbsp;<u>Сохранение XML документа.</u>
+<p align="justify">&nbsp;&nbsp;&nbsp;Созданное в памяти компьютера объектное дерево можно сохранить в текстовый файл, используя метод <b>save</b>:
+<p align="justify">&nbsp;&nbsp;&nbsp; <i>xmlobj.save (&quot;menu.xml&quot;);</i>
+<p align="justify">&nbsp;&nbsp;&nbsp;Кроме этого, XML-документ можно сохранить в другом <b>XMLDOMDOcument</b> объекте, передав в качестве аргумента функции ссылку на него.  
+<p align="justify">&nbsp;&nbsp;&nbsp; <u>Обход дерева элементов</u>
+<p align="justify">&nbsp;&nbsp;&nbsp;Для работы со списком элементов в объектной модели XML-анализатора Microsoft предназначены специальные объекты: <b>XMLDOMNode</b> - представляющий узел дерева и <b>XMLDOMNodeList</b> - список узлов, поддерево. Их описание приведено в таблице.
+<p align="justify">&nbsp;&nbsp;&nbsp;Просмотр списка элементов документа всегда начинается с получения нужного поддерева. Для этого у объекта <b>XMLDOMNode</b> используется методы <b>childNodes</b>, <b>selectNodes</b> или <b>getElementsByTagName</b>, возвращающие объект <b>XMLDOMNodeList</b>. Количество элементов этом поддереве можно узнать при помощи свойства <b>length</b>.
+<p align="justify">&nbsp;&nbsp;&nbsp;Вот, например, как будет выглядеть процедура рекурсивного просмотра документа произвольной структуры:
+<pre>
+&lt;SCRIPT language=&quot;JavaScript&quot;&gt;
+var result_str = &quot;&lt;hr/&gt;&quot;;
+var docobj = new ActiveXObject(&quot;Microsoft.XMLDOM&quot;); 
+
+ function printElements(){
+  docobj.load(&quot;music.xml&quot;);
+  viewNode(docobj.documentElement);
+  xmlTree.innerHTML = result_str;
+ }
+
+ function viewNode(node){
+  var childnodes = curNode.childNodes.length;
+  result_str+=&quot; &quot;+curNode.nodeName+&quot;&lt;br/&gt;&quot;;
+  for(var i=0;i&lt;childnodes;i++){
+  viewNode(curNode.childNodes.item(i));
+ }
+}
+&lt;/SCRIPT&gt;
+
+ &lt;BODY onLoad=&quot;printElements()&quot;&gt;
+   &lt;DIV id=&quot;xmlTree&quot;&gt;&lt;/DIV&gt;
+ &lt;/BODY&gt;
+&lt;/HTML&gt;
+</pre>
+<p align="justify">&nbsp;&nbsp;&nbsp;Навигация по документу осуществляется обычным перебором массива элементов в цикле for или при помощи методf <b>nextNode</b>. И в том и в другом случае мы сначала выбираем нужное поддерево, а затем обрабатываем его элементы. Необходимо заметить также, что в <b>XMLDOMNodeList</b> отражаются все изменения, вносимые в структуру XML-документа, и информация в результате будет всегда актуальной.
+<p align="justify">&nbsp;&nbsp;&nbsp; <u>Поиск элемента</u>
+<p align="justify">&nbsp;&nbsp;&nbsp;Поиск нужного элемента или поддерева осуществляется при помощи методов <b>selectNode</b> и <b>selectSingleNode</b> (то же что и <b>selectNode</b>, только возвращает первый найденный элемент). В качестве параметров им необходимо указать строку XSL запроса (образец поиска - XSL pattern).
+<p align="justify">&nbsp;&nbsp;&nbsp;Синтаксис языка запросов очень гибок и является одним из самых мощных механизмов в XSL - при помощи них можно осуществлять поиск элемента по названию, значению атрибутов, содержанию, учитывая вложенность и положение в дереве элементов. Наиболее ярко все эти возможности демонстрируются при обработке XML-документов стилевыми таблицами XSL , когда мы можем выделять из общего дерева необходимые нам элементы и применять к ним специальные форматирующие инструкции. 
+<p align="justify">&nbsp;&nbsp;&nbsp;Внешне язык XSL запросов немного напоминает обычный способ определения пути к ресурсу в файловой системе - список узлов дерева, разделенных символом /. Для указания на текущий элемент используется символ &quot;.&quot; , на родительский - &quot;..&quot;, для выделения всех дочерних элементов - символ &quot;*&quot;, для выделения элемента, расположенного просто &quot;ниже&quot; по дереву(не важно на каком уровне вложенности) - &quot;//&quot;. 
+<p align="justify">&nbsp;&nbsp;&nbsp;Вот примеры простых XSL шаблонов:
+<i>
+<p align="justify">&nbsp;&nbsp;&nbsp;&quot;/music-collection&quot; - корневой элемент
+<p align="justify">&nbsp;&nbsp;&nbsp;&quot;bards/&quot; - возвращает дочерние элементы для элемента bards
+<p align="justify">&nbsp;&nbsp;&nbsp;&quot;authors-list//&quot; - список всех элементов, вложенных в authors-list
+<p align="justify">&nbsp;&nbsp;&nbsp;&quot;author[@id]&quot; - список элементов author, в котором определен атрибут id
+<p align="justify">&nbsp;&nbsp;&nbsp;&quot;author[@id=2]&quot; - элемент author, в котором значение атрибута id равно двум
+<p align="justify">&nbsp;&nbsp;&nbsp;&quot;author[address]&quot; - список элементов author, которые содержат хотя бы один элемент address
+<p align="justify">&nbsp;&nbsp;&nbsp;&quot;author[address or city]&quot; - список элементов author, содержащих  элементы address или city 
+<p align="justify">&nbsp;&nbsp;&nbsp;</i>
+<p align="justify">&nbsp;&nbsp;&nbsp;Условие на значение в запросе должно заключаться в символы &quot;[&quot; и &quot;]&quot;. Для выбора значения атрибута в условии указывается символ @.
+<p align="justify">&nbsp;&nbsp;&nbsp;Применяя к XML- документу различные шаблоны поиска, можно осуществлять сложные манипуляции с его содержимым, динамически изменяя объем отображаемой пользователю информации в зависимости от производимых им действий (например, динамическая сортировка, отображение подчиненных таблиц и т.д.) Более подробное описание XSL-таблиц будет приведено в одной из следующих статей.
+<p align="justify">&nbsp;&nbsp;&nbsp; 
+
+
+<center>
+<p><font size="-1"><a href="part21.html">Назад</a> |
+ <a href="index.html">Содержание</a> |
+ <a href="part23.html">Вперед</a>
+ </center>
+<p>&nbsp;
+
+</body></html>

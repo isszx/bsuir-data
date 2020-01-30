@@ -1,0 +1,48 @@
+<html>
+<head>
+
+<title>Язык XML. DTD-определения для XML-документа</title>
+</head>
+<body background="../fon.gif">
+<p><div align="center"><b>Приложение 4</b></div></p><font size="-1">
+
+<b>DTD-определения для XML-документа приложения 1</b>
+<pre>
+&lt;!ENTITY % idattr 'id ID #IMPLIED'gt;
+&lt;!ENTITY % opt 'title?,date,about'gt;
+&lt;!ENTITY % cont 'tel*,url*,email*'gt;
+&lt;!element title (PCDATA)?gt;
+&lt;!element firstname (PCDATA)?gt;
+&lt;!element lastname (PCDATA)?gt;
+&lt;!element email (PCDATA)?gt;
+&lt;!element url (PCDATA)?gt;
+&lt;!element tel (PCDATA)?gt;
+&lt;!element address (PCDATA)?gt;
+&lt;!element fax (PCDATA)?gt;
+&lt;!element date (PCDATA)?gt;
+&lt;!element home-url (PCDATA)?gt;
+&lt;!element article-url (PCDATA)?gt;
+&lt;!element hotkey (PCDATA)? gt;
+&lt;!element article-finished EMPTYgt;
+&lt;!element contents ANYgt;
+&lt;!element hotkeys (PCDATA|hotkey)? gt;
+&lt;!element author 
+(PCDATA|firstname?,lastname?,%cont;) gt;
+&lt;!attlist author %idattr;gt;
+&lt;!element authors (PCDATA|author*)? gt;
+&lt;!element article (%opt;,author,article-url,hotkeys*,
+contents*,article-finished) gt;
+&lt;!attlist article %idattr;gt;
+&lt;!element articles (article)? gt;
+&lt;!element issue (%opt;,home-url?,articles*) gt;
+&lt;!attlist issue %idattr; index CDATA #REQUIRED gt;
+&lt;!element issues-list (PCDATA|issue*)* gt;
+&lt;!element contacts (address,%cont;)gt;
+&lt;!element journal (title?,contacts?,isues-list,
+authors-list)gt;
+&lt;!attlist journal %idattr; src CDATA #IMPLIED gt;
+</pre>
+<p><center><p>
+<font size=-1>
+<a href="app3.html">Назад</a> | <a href="index.html">Содержание</a></font></center></p>
+</body></html>

@@ -1,0 +1,321 @@
+<html>
+<head>
+</head>
+<BODY background="../fon.gif">
+<p><div align="center"><b>Глава 9. Некоторые (предположительно полезные) советы по разработке
+и размещению HTML-страниц</b></div></p><font size="-1">
+
+
+<b>Правила хорошего тона при разработке HTML-документов </b>
+
+<b>Ознакомьтесь с текущей спецификацией HTML </b>
+
+<BLOCKQUOTE>
+<P align="justify">Производители браузеров часто добавляют к своим творениям поддержку
+меток, не входящих в текущую спецификацию HTML. Именно поэтому иногда можно
+встретить страницы, оптимизированные для того или иного браузера. На мой
+взгляд, это далеко не лучший подход. Однако, как говорил Рэй Брэдбери,
+единственный способ заставить писателя не писать — это кольт сорок пятого
+калибра. И писатели пишут... </P>
+</BLOCKQUOTE>
+
+<b>Не питайте абсолютного доверия к визуальным редакторам HTML </b>
+
+<BLOCKQUOTE>
+<P align="justify">Помните, что большинство визуальных редакторов HTML, хотя и работают в 
+целом корректно, имеют мелкие (а иногда и крупные) недостатки. Отчасти это 
+связано с тем, что HTML с самого начала не был приспособлен для 
+автоматизированной разработки.
+</P>
+</BLOCKQUOTE>
+
+<b>Используйте продуманную иерархию заголовков </b>
+
+<BLOCKQUOTE>
+<P align="justify">Помните, что Ваш документ будет читаться гораздо лучше, если в нем будет
+четкое разбиение на разделы и подразделы. HTML предоставляет в Ваше распоряжение
+шесть уровней заголовков. Воспользуйтесь этим богатством в своих интересах
+— создайте легко читаемый документ с интуитивно ясной структурой. </P>
+</BLOCKQUOTE>
+
+<b>Следите за вложенностью меток </b>
+
+<BLOCKQUOTE>
+<P align="justify">Современные браузеры способны правильно обработать вложенные метки.
+Например, вот такой фрагмент HTML-текста </P>
+
+<P align="justify"><TT>&lt;B&gt;&lt;I&gt;жирный наклонный шрифт&lt;/I&gt;&lt;/B&gt;</TT></P>
+
+<P align="justify">большинство браузеров вполне успешно воспроизведут как <B><I>жирный
+наклонный шрифт</I></B>. Обратите внимание — метки <TT>&lt;I&gt;...&lt;/I&gt;</TT>
+в этом фрагменте находятся внутри меток <TT>&lt;B&gt;...&lt;/B&gt;</TT>.
+Другими словами, метки вложены одна в другую. </P>
+
+<P align="justify">Работа браузера, однако, окажется сильно затрудненной, если вложенность
+окажется нарушенной, например: </P>
+
+<P align="justify"><TT>&lt;B&gt;&lt;I&gt;вложенность меток нарушена&lt;/B&gt;&lt;/I&gt;
+</TT></P>
+
+<P align="justify">Соблюдение вложенности — очень важная часть общей культуры написания
+HTML-текста. </P>
+</BLOCKQUOTE>
+
+<b>Указывайте альтернативный текст при включении в документ изображений
+</b>
+
+<BLOCKQUOTE>
+<P align="justify">Помните, что пользователи могут отключать автоматическую загрузку изображений.
+Не ленитесь подсказать пользователю, чего именно он не видит. Это особенно
+важно, когда изображения являются гипертекстовыми ссылками. </P>
+</BLOCKQUOTE>
+
+<b>При разработке крупных документов создавайте оглавления </b>
+
+<BLOCKQUOTE>
+<P align="justify">При написании крупного документа очень полезно поместить в его начале
+оглавление с гипертекстовыми ссылками на разделы. Это может облегчить пользователю
+работу с документом, особенно если документ носит справочный характер.
+</P>
+</BLOCKQUOTE>
+
+<b>Хорошо продумайте навигацию </b>
+
+<BLOCKQUOTE>
+<P align="justify">Попытайтесь вообразить себе, что в распоряжении пользователя нет кнопки
+<TT>Back</TT>. Подумайте о том, как обеспечить пользователю необходимую свободу
+перемещения в этом случае. Это поможет Вам спроектировать удобную в пользовании
+коллекцию HTML-документов. </P>
+</BLOCKQUOTE>
+
+<b>Инструменты разработчика: пристрастные советы </b>
+
+<P align="justify">Предупреждаю Вас честно: все приведенные ниже комментарии представляют
+собой мое личное (и, вполне вероятно, необъективное) мнение. </P>
+
+<A NAME="software">
+<b>Визуальные редакторы HTML </b>
+
+<b>Netscape Navigator Gold </b>
+
+<P align="justify">На мой взгляд, это лучший из редакторов типа &quot;что видишь, то и
+получишь&quot;. Не сочиняет нестандартных меток, хотя некоторые стандартные
+(в частности, метки списков) пишет не лучшим образом. При попытке перейти
+из режима просмотра в режим редактирования иногда подвисает на томительные
+30-40 секунд. На мой взгляд, недостаточно защищен от ошибок неопытного
+пользователя (хотя это относится только к подсистеме редактора; в режиме
+браузера работает четко). </P>
+
+<P align="justify">Распространяется бесплатно.<!-- Необходимую версию можно подобрать прямо
+отсюда: </P>
+
+<P align="justify"><FORM ACTION="http://cgi.netscape.com/cgi-bin/123.cgi#urllist" METHOD="POST">Программное
+обеспечение: <BR>
+<SELECT NAME="PRODUCT">
+<OPTION VALUE="">Select a Product 
+<OPTION>Netscape Communicator Preview Release 3 - Typical Install
+<OPTION>Netscape Communicator Preview Release 3 - All Components plus Plug-ins 
+<OPTION>Netscape Communicator Professional Preview Release 3 - Typical Install 
+<OPTION>Netscape Communicator Professional Preview Release 3 - All Components plus Plug-ins 
+<OPTION>Netscape Navigator 3.01 - Standard plus components 
+<OPTION>Netscape Navigator 3.01 - Standard 
+<OPTION>Netscape Navigator 3.01 Gold - Standard plus components
+<OPTION>Netscape Navigator 3.01 Gold - Standard 
+<OPTION>Navigator 3.0 plus Modem Software - Direct Install 
+<OPTION>Navigator 3.0 plus Modem Software - Floppy Install 
+<OPTION>Navigator 3.01 Beta with Java for Windows 3.1
+<OPTION>Netscape Navigator 2.02 for OS/2 Warp 
+<OPTION>Netscape Navigator 2.02 for Open VMS 
+<OPTION>Power Pack 2.0 - Windows only 
+<OPTION>International Netscape Navigator 3.01 - Standard plus components 
+<OPTION>International Netscape Navigator 3.01 - Standard 
+<OPTION>International Netscape Navigator 3.01 Gold - Standard plus components 
+<OPTION>International Netscape Navigator 3.01 Gold - Standard 
+<OPTION>International Netscape Navigator 3.01 Beta
+<OPTION>International Netscape Navigator 3.01 Gold Beta 
+<OPTION>International Netscape Navigator 2.02 
+</SELECT><BR>
+Oперационная система: <BR>
+<SELECT NAME="OS">
+<OPTION VALUE="">Select Your Operating System 
+<OPTION>Macintosh
+<OPTION>Windows 3.1 
+<OPTION>Windows 95 or NT 
+<OPTION>Unix: AIX 
+<OPTION>Unix: BSD 2.1 
+<OPTION>Unix: HP-UX 
+<OPTION>Unix: IRIX 5 
+<OPTION>Unix: IRIX 6 
+<OPTION>Unix: Linux 
+<OPTION>Unix: Digital 3.2 
+<OPTION>Unix: SunOS 4.1.3 
+<OPTION>Unix: SPARC Solaris 2.3 
+<OPTION>Unix: SPARC Solaris 2.4 
+<OPTION>OS/2 Warp 
+<OPTION>Open VMS 
+</SELECT><BR>
+<INPUT TYPE=hidden NAME="LANGUAGE" VALUE="English">
+<INPUT TYPE=hidden NAME="LOCATION" VALUE="Europe">
+<INPUT TYPE="submit" name="submit1" VALUE="Найти, где лежит">
+</FORM></P>-->
+
+<b>Microsoft Front Page </b>
+
+<P align="justify">Ходит по России в основном в виде версий для 30-дневных тестов с обезвреженным
+механизмом самоуничтожения. Наиболее крупных болячек две: </P>
+
+<OL>
+<LI>Вставляет в заголовок HTML-документа META-инструкцию 
+
+<P align="justify"><TT>&lt;META HTTP-EQUIV=&quot;Content-type&quot; CONTENT=&quot;text/html;
+charset=windows-1251&quot;&gt;</TT></P>
+
+<P align="justify">Это превращается в неумную шутку при попытке опубликовать документ в
+кодировке КОИ-8. </P>
+
+<P align="justify">Лекарство только одно: перед размещением на сервере удалить или исправить
+META-инструкцию вручную. </P>
+
+<LI>Рассыпает ровным слоем по документу метки вида 
+
+<P align="justify"><TT>&lt;FONT FACE=&quot;Arial Cyr&quot;&gt;[текст]&lt;/FONT&gt;</TT>
+</P>
+
+<P align="justify">для указания того, каким шрифтом показывать <TT>[текст]</TT>. </P>
+
+<P align="justify">В HTML 3.2 метка <TT>&lt;FONT&gt;</TT> используется для изменения 
+размеров и цвета шрифта. Метка <TT>&lt;FONT FACE=&quot;[имя шрифта]&quot;&gt;</TT> 
+в спецификации упомянута как поддерживаемая некоторыми браузерами, но 
+нежелательная и потому не включенная в спецификацию и не рекомендуемая к 
+применению. В самом деле, формат HTML не привязан даже к конкретной 
+аппаратной платформе, зачем же привязывать его к шрифту! </P>
+
+</OL>
+
+<b>Небольшое отступление о не упомянутых здесь редакторах </b>
+
+<BLOCKQUOTE>
+<P align="justify">Многие редакторы типа &quot;что видишь, то и получишь&quot; сохраняют
+русские буквы в виде соответствующих им &amp;-последовательностей. На &quot;внешнем
+виде&quot; файла при просмотре браузером это никак не отражается, а его
+размер возрастает в четыре-пять раз. Соответственно растет и время загрузки.
+</P>
+
+<P align="justify">В некоторых редакторах это свойство настраиваемое, в некоторых зашито
+жестко. </P>
+</BLOCKQUOTE>
+
+<b>Редакторы HTML-текстов </b>
+
+<P align="justify">Большинство таких редакторов вполне справляется с возложенными на них
+задачами. Мне лично очень понравились <A HREF="http://www.sausage.com/">HotDog</A>
+и <A HREF="http://www.sandiego.com/webedit/download.htmll">Ken Nesbitt Web Editor</A>.
+Можете выгрузить 30-дневные тестовые версии и попробовать сами. </P>
+
+<b>Конвертеры документов текстовых процессоров в HTML </b>
+
+<b>Internet Assistant for Microsoft Word </b>
+
+<P align="justify">Можно выгрузить бесплатно с WWW-сервера компании Microsoft 
+(<A HREF="http://www.microsoft.com/msword/internet/ia/">http://www.microsoft.com/msword/internet/ia/</A>)
+</P>
+
+<P align="justify">Превращает <I>Microsoft Word</I> версии 6.1 и выше в браузер и редактор
+HTML. Некорректно отображает таблицы и сохраняет русские буквы в виде 
+&amp;-последовательностей. От других людей мне доводилось слышать, что 
+вторая проблема была решена в версии для <I>Word</I> 7.0. Так ли это на самом 
+деле, сказать не берусь, поскольку все еще работаю с <I>Word</I> 6.1. </P>
+
+<b>GT_HTML </b>
+
+<P align="justify">Можно выгрузить бесплатно с <A HREF="http://www.gatech.edu/word_html/">http://www.gatech.edu/word_html/</A>.</P>
+
+<P align="justify">Понравилось, особенно после в целом негативного опыта работы с <I>Internet
+Assistant for Microsoft Word</I>. Требует несколько большего объема рутинной
+работы, чем <I>Internet Assistant</I>, но и работает гораздо более корректно,
+включая воспроизведение таблиц. Существуют версии для <I>Microsoft Word</I>
+2.0, <I>Microsoft Word</I> 6.0 и <I>Microsoft Word for Macintosh</I>. </P>
+
+<b>Другие </b>
+
+<P align="justify">Краткую информацию на английском языке о некоторых других конвертерах, а
+также о том, где они лежат, можно найти на любом поисковом сервере. Ниже
+даны две ссылки на сервер Yahoo!:</P>
+
+<UL>
+<LI><A HREF="http://www.yahoo.com/Computers_and_Internet/Software/Internet/World_Wide_Web/HTML_Converters/">Computers
+and Internet: Software: Internet: World Wide Web: HTML Converters</A> </LI>
+
+<LI><A HREF="http://www.yahoo.com/Business_and_Economy/Companies/Computers/Software/Internet/Shareware/HTML_Converters/">Business
+and Economy: Companies: Computers: Software: Internet: Shareware: HTML
+Converters</A>  </LI>
+</UL>
+
+<b>Графические редакторы </b>
+
+<P align="justify">Скажу Вам сразу — мой опыт в этой области весьма ограничен. Компьютерная
+графика — это пограничная область между программированием и живописью (в
+тех случаях, конечно, когда она делается хорошо). В программировании я
+немного разбираюсь, а вот в живописи отнюдь не силен. Тем не менее, краткая
+информация о программном обеспечении может оказаться уместной. </P>
+
+<b>Paint Shop Pro </b>
+
+<BLOCKQUOTE>
+<P align="justify">Весьма симпатичный графический редактор. Поддерживает множество форматов
+графических файлов, в том числе и уже знакомые нам GIF и JPEG. Бесплатно
+распространяется в виде полностью функциональной версии для 30-дневных
+испытаний без механизма самоуничтожения. Существуют версии для <I>Windows</I>
+3.xx и <I>Windows</I> 95. Можно выгрузить бесплатно с сервера компании-разработчика:
+<A HREF="http://www.jasc.com/pspdl.htmll">http://www.jasc.com/pspdl.htmll</A>.</P>
+</BLOCKQUOTE>
+
+<b>GIF Construction Set </b>
+
+<BLOCKQUOTE>
+<P align="justify">Программное обеспечение для создания подвижных изображений в формате
+GIF. Распространяется бесплатно. Существуют версии для <I>Windows</I> 3.xx
+и <I>Windows</I> 95. Можно выгрузить бесплатно с сервера компании-разработчика:
+<A HREF="http://www.mindworkshop.com/alchemy/gifcon.htmll">http://www.mindworkshop.com/alchemy/gifcon.htmll</A>.
+</P>
+</BLOCKQUOTE>
+
+<A NAME="hosts"></a>
+<b>Где можно бесплатно разместить свою страничку </b>
+
+<P align="justify">Существует достаточно серверов, владельцы которых готовы позволить всем
+желающим размещать на них свои документы бесплатно. Для этого необходимо
+только знать английский язык в степени, достаточной для того, чтобы правильно
+заполнить регистрационную форму на сервере. Необходимо также уметь пользоваться
+программным обеспечением для загрузки файлов на удаленный сервер (CuteFTP,
+WS_FTP или аналогичным). </P>
+
+<P align="justify">В этом смысле исключением выглядят серверы 
+<A HREF="http://www.halyava.ru/">http://www.halyava.ru</A> и 
+<A HREF="http://www.i-connect.ru/">http://www.i-connect.ru</A>.
+Вся информация там на русском языке, так что нет смысла пересказывать. 
+Посмотрите сами. 
+</P>
+
+<P align="justify">Информацию о некоторых других бесплатных серверах можно найти на поисковой системе 
+<A HREF="http://www.yahoo.com/Business_and_Economy/Companies/Internet_Services/Web_Services/Free_Web_Pages/">
+Yahoo</A>. Информация там не всегда самая новая, так что настоятельно рекомендую 
+посетить <A HREF="http://www.ints.donetsk.ua/~rcsc/_w/FreePages.html">
+страничку Вадима Хомахи</A>, на которой такой информации много, свежей, 
+проверенной и на русском языке. 
+</P>
+
+
+<H2>Несколько слов в заключение</H2>
+
+<P align="justify">Надеюсь, что Вы смогли узнать что-то новое и полезное из этого руководства.
+Логичный вопрос теперь — куда двигаться дальше? Неплохая коллекция ссылок на 
+русскую документацию по HTML и смежным вопросам есть на сервере 
+<A HREF="http://www.machaon.ru/digest/rusinter.htmlL.htmll">"Махаон"</A>.
+</P>
+
+<P align="center">[ <A class="menu" HREF="index.html">К оглавлению</A> | <A class="menu" HREF="pr0008.html">К предыдущей
+главе</A> ] </P>
+
+</body>
+</html>

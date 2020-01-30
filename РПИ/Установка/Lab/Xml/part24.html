@@ -1,0 +1,525 @@
+<html><head>
+
+<title>DOM совместимые анализаторы</title>
+</head>
+<body background="../fon.gif">
+<p><div align="center"><b>DOM совместимые анализаторы</b></div></p><font size="-1">
+
+<a name="p1"></a>
+<p align="justify">&nbsp;&nbsp;&nbsp;Другим способом представления внутренней структуры документа являются DOM - интерфейсы. Как уже упоминалось, их реализацией занимаются разработчики XML-анализатора, используя для этого возможности конкретного языка программирования. Программисты на Java могут найти эти классы в библиотеке  org.w3.dom. Наследуя виртуальные методы DOM интерфейсов, классы анализатора предоставляют приложению стандартный способ манипулирования структурой документа. В свою очередь, приложение, использующее XML-анализатор, может не знать о способе реализации интерфейсов, ему доступна готовая библиотека методов, при помощи которой он может производить поиск нужных фрагментов документа, создавать, удалять и модифицировать его элементы. 
+<p align="justify">&nbsp;&nbsp;&nbsp;Одним из доступных на сегодня DOM-совместимых наборов классов для работы с документами является библиотека com.ibm.dom, входящая в состав XML анализатора <b>xml4j</b> от IBM. Получить ее можно по адресу <a href="http://www.alphaworks.ibm.com"> www.alphaworks.ibm.com</a>. Принцип использования DOM интерфесов по сравнению с IE5 практически не изменился - поменялись только названия объектов  и методов. Их краткий обзор представлен в следующей таблице.
+<p align="justify">&nbsp;&nbsp;&nbsp;
+<TABLE BORDER=1 CELLSPACING=0 CELLPADDING=2 WIDTH="100%">
+<TR><TD WIDTH="24%" VALIGN="TOP">
+<P>Node</TD>
+<TD WIDTH="76%" VALIGN="TOP">
+<FONT FACE="Times New Roman"><P>Базовый интерфейс для остальных элементов объектной модели XML, представляющий узел дерева структуры документа.</FONT></TD>
+</TR>
+<TR><TD WIDTH="24%" VALIGN="TOP">
+<P>Document</TD>
+<TD WIDTH="76%" VALIGN="TOP">
+<FONT FACE="Times New Roman"><P>Используется  для получения информации о документе и изменения его структуры. Это интерфейс представляет собой корневой элемент XML документа и содержит методы доступа ко всему содержимому документа. При помощи методов объекта Document в программе можно создавать дочерние объекты, представляющие различные конструкции документа (например, createElement - создание элемента, createComment - создание комментария, createTextNode - текстового фрагмента), удалять, перемещать, добавлять объекты (removeChild, replaceChild, insertBefore, ...), перемещаться по дереву элементов(getFirstChild, getLastChild, getNextSibling, getParentNode, getPreviousSibling, ...), получать элементы по их названию (getElementsByTagName, </FONT>:<FONT FACE="Times New Roman">) и т.д. В объектной модели IE5 этот интерфейс доступен для сценариев на JScript, VB через объект XMLDOMDocument</FONT></TD>
+</TR>
+<TR><TD WIDTH="24%" VALIGN="TOP">
+<P>Element</TD>
+<TD WIDTH="76%" VALIGN="TOP">
+<FONT FACE="Times New Roman"><P>Представляет элемент документа, определяя методы доступа к его названию(getTagName, getElementsByTagName), атрибутам (getAttribute, getAttributeNode, setAttribute, removeAttribute, : ) и дочерним элементам(appendChild, getChildNodes, getFirstChild, ...). </FONT></TD>
+</TR>
+<TR><TD WIDTH="24%" VALIGN="TOP">
+<P>Attr</TD>
+<TD WIDTH="76%" VALIGN="TOP">
+<FONT FACE="Times New Roman"><P>Интерфейс, представляющий атрибут элемента. Имеет методы для получения(getValue) и установления(setValue) значения атрибута. Хотя согласно синтаксису XML атрибуты должны назначаться только элементам, в DOM возможно их создание любым объектом, наследующим интерфейс Node. Поэтому можно создать атрибут для документа, который будет находится в списке атрибутов, но не принадлежать ни одному из его элементов.</FONT></TD>
+</TR>
+<TR><TD WIDTH="24%" VALIGN="TOP">
+<P>CharacterData</TD>
+<TD WIDTH="76%" VALIGN="TOP">
+<FONT FACE="Times New Roman"><P>Интерфейс, предоставляющий доступ к текстовым данным документа. В XML документе к этому типу данных относятся комментарии, текстовое содержимое элементов, секции CDATA. При помощи методов этого интерфейса можно добавлять, удалять, редактировать данные(appendData, deleteData, replaceData, setData), получать размер области текста (getLength) и извлекать текстовое содержимое(getData, substringData, ...)</FONT></TD>
+</TR>
+<TR><TD WIDTH="24%" VALIGN="TOP">
+<P>Comments</TD>
+<TD WIDTH="76%" VALIGN="TOP">
+<FONT FACE="Times New Roman"><P>Интерфейс для доступа к тексту комментариев</FONT></TD>
+</TR>
+<TR><TD WIDTH="24%" VALIGN="TOP">
+<P>Text</TD>
+<TD WIDTH="76%" VALIGN="TOP">
+<FONT FACE="Times New Roman"><P>Представляет текстовое содержимое элемента</FONT></TD>
+</TR>
+<TR><TD WIDTH="24%" VALIGN="TOP">
+<P>CDATASection</TD>
+<TD WIDTH="76%" VALIGN="TOP">
+<FONT FACE="Times New Roman"><P>Интерфейс, представляющий секции CDATA - фрагментов документа, заключенные в символы "[[" и "]]&gt;", которые не обрабатываются XML-анализатором и поэтому могут содержать символы, "запрешенные" в спецификации XML. В эту область можно, к примеру, помещать стилевые таблицы или JavaScript сценарии, используемые при отображении HTML страницы.</FONT></TD>
+</TR>
+<TR><TD WIDTH="24%" VALIGN="TOP">
+<P>ProcessingInstruction</TD>
+<TD WIDTH="76%" VALIGN="TOP">
+<FONT FACE="Times New Roman"><P>Предоставляет доступ к т.н. области "инструкций процессора", данные из которой используются XML-анализатором при разборе документа. Доступ к этим данным возможен при помощи методо getData, setData и getTarget</FONT></TD>
+</TR>
+<TR><TD WIDTH="24%" VALIGN="TOP">
+<P>Notation</TD>
+<TD WIDTH="76%" VALIGN="TOP">
+<FONT FACE="Times New Roman"><P>Определяет инструкцию DTD описания. Для получения ее идентификаторов используются методы getPublicId и getSystemId . DOM Level 1 не поддерживает прямого доступа к DTD декларациям по записи и сейчас они доступны лишь для чтения (при помощи параметра nodeName интерфейса Node)</FONT></TD>
+</TR>
+</TABLE>
+<p align="justify">&nbsp;&nbsp;&nbsp;В следующем примере демонстрируется использование DOM-объектов для вывода содержимого XML документа в двух форматах - в виде дерева элементов и обычной HTML страницы. Немного изменив пример, можно заставить программу сохранять выходной формат в файле и мы получим таким образом обычный XML-HTML конвертор.
+<pre>
+/*
+Пример использования DOM анализатора.
+Демонстрируется возможность рекурсивного обхода дерева элементов,
+создание новых элементов, фильтрация элементов (поиска по параметрам)
+*/
+
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
+
+import org.w3c.dom.*;
+
+import org.xml.sax.Parser;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.ParserFactory;
+
+import com.ibm.xml.parsers.DOMParser;
+
+public class logParser {
+
+    static String defaultParser =
+	 &quot;com.ibm.xml.parsers.DOMParser&quot;;
+    static String urlLog;
+    static  Document xmldoc = null;
+    static  PrintWriter out;
+
+/* 
+Конструктор нашего класса- обработчика. 
+В нем создается выходной поток для печати 
+*/
+ 
+    public logParser(String url){
+     urlLog = url;
+
+       try {
+            out = new PrintWriter
+			(new OutputStreamWriter(System.out,
+			 &quot;koi8-r&quot;));
+        }
+        catch (UnsupportedEncodingException e) {
+         System.err.println(e.toString());
+        }
+
+    }
+
+    public void parseDoc(){
+     parseDoc(defaultParser);
+    }
+
+/* 
+Создание класса анализатора, обрабтка им XML-документа 
+и создание объектной модели документа
+*/
+
+    public void parseDoc(String parserName){
+      
+        try {
+            Parser parser =
+		ParserFactory.makeParser(parserName);
+	    parser.parse(urlLog);
+
+// Получение указателя на корневой элемент документа
+            xmldoc = ((DOMParser)parser).getDocument();
+
+        }
+        catch (Exception e) {
+         System.err.println(e.toString());          
+        }   
+    }
+
+//=================================================
+// Вывод содержимого документа в виде форматированного 
+списка XML- элементов 
+//========================
+            
+                    
+    public void viewLogAsXML(){
+
+        try {
+
+	     viewLogAsXML(xmldoc,&quot;&quot;);  
+
+        }
+        catch (Exception e) {
+         System.out.println(e.toString());          
+        }   
+      out.flush();
+
+    }
+
+/* 
+Рекурсивный обход элементов документа, начиная с указанного
+элемента node.
+*/
+
+    public void viewLogAsXML(Node node,String offs){
+
+        if (node == null) {
+            return;
+        }
+        int type = node.getNodeType(); //
+		 Получение информации о типе текущего узла
+        switch (type) {
+/* Если текщий узел - корневой элемент документа */
+
+            case Node.DOCUMENT_NODE: {
+                out.println(&quot;&lt;?xml
+				 version=\&quot;1.0\&quot;
+				 encoding=\&quot;koi-8\&quot;?&gt;&quot;);
+                viewLogAsXML(((Document)node).
+				getDocumentElement(),offs);
+                out.flush();
+                break;
+            }
+
+/* Если текщий узел - элемент */
+
+            case Node.ELEMENT_NODE: {
+                out.print(offs+&quot;&lt;&quot;);
+// Печать названия элемента 
+                out.print(node.getNodeName());
+// Получение списка атрибутов текущего элемента
+
+                NamedNodeMap attrs = node.getAttributes();
+		Node attr;
+                for (int i = 0; i &lt;
+				 attrs.getLength(); i++) {
+                    attr = attrs.item(i);
+                    out.print(' ');
+                    
+out.print(attr.getNodeName()+&quot;=\&quot;&quot;
++attr.getNodeValue()+&quot;\&quot;&quot;);
+                }
+                out.println('&gt;');
+
+// Получение списка дочерних элементов
+                NodeList children = node.getChildNodes(); 
+
+// Если у текщего элемента есть дочерние, то выводим и их
+
+                if (children != null) {
+                    int len = children.getLength();
+                    for (int i = 0; i &lt; len; i++) {
+                        viewLogAsXML(children.item(i),
+						offs+&quot; &quot;);
+                    }
+                }
+                break;
+            }   
+
+/* Если текщий узел - текстовый */
+            case Node.TEXT_NODE: {
+                out.println(offs+node.getNodeValue());
+                break;
+            }
+    
+        }
+// Печать закрывающего тэга элемента
+        if (type == Node.ELEMENT_NODE) {
+            out.print(offs+&quot;&lt;/&quot;);
+            out.print(node.getNodeName());
+            out.println('&gt;');
+        }          
+            
+    }               
+
+
+//===============================================
+// Вывод в формате HTML
+//=====================
+ 
+/* Вызов рекурсивного обходчика */
+
+    public void viewLog(){
+
+// Header
+        viewAsHTML(&quot;All log records:&quot;);
+
+        try {
+
+// Вывод содержимого
+	     viewLog(null);
+
+        }
+        catch (Exception e) {
+         System.out.println(e.toString());          
+        }
+
+// Header
+        viewAsHTML();
+
+    }
+
+
+/* Печать только сообщений об ошибках */
+
+    public void viewErrors(){
+
+// Header
+        viewAsHTML(&quot;Log errors:&quot;);
+
+        try {
+// Вывод содержимого
+	     viewLog(&quot;error&quot;);
+        }
+        catch (Exception e) {
+         System.out.println(e.toString());          
+        }
+// Footer
+        viewAsHTML();
+
+    }
+
+
+/* 
+Рекурсивный обход элементов, у которых 
+атрибут type равен заданному. 
+*/                         
+                                        
+    public int viewLog(String type){
+        
+
+        int i=0;
+        int elemNum=0;
+        int messageCount=0;
+	Element elem;
+	NodeList elements;
+
+	elements = xmldoc.getElementsByTagName
+	(&quot;event&quot;);
+        if(elements==null) System.out.println
+		(&quot;Empty element collection&quot;);
+
+        elemNum = elements.getLength();
+
+        if (type == null) {
+
+            for (i = 0; i &lt; elemNum; i++) {
+	        if(elements.item(i)==null) 
+			System.out.println
+			(&quot;Empty element&quot;);
+              viewLogMessage((Element)elements.item(i));
+            }
+            messageCount=elemNum;
+
+        }
+        else {
+            for (i = 0; i &lt; elemNum; i++) {
+                elem = (Element)elements.item(i);
+
+                if(elem.getAttribute
+				(&quot;type&quot;)==type){
+                 messageCount++;
+                 viewLogMessage(elem);
+                }
+
+            }
+        }
+       return messageCount;
+    }
+
+/* Печать заголовка таблицы */
+
+    public void viewAsHTML(String title){
+        out.println(&quot;&lt;html&gt;&quot;);
+        out.println(&quot;&lt;head&gt;&lt;title&gt;
+		Log parser
+		 sample&lt;/title&gt;&lt;/head&gt;&quot;);
+        
+out.println(&quot;&lt;body&gt;&lt;br&gt;&lt;b&gt;&quot;
++title+&quot;&lt;/b&gt;&lt;hr&gt;&quot;);
+        out.println(&quot;&lt;table cellspacing=\&quot;2\&quot; 
+cellpadding=\&quot;2\&quot; border=\&quot;1\&quot; 
+width=\&quot;600\&quot;&gt;&quot;);
+        out.println(&quot;&lt;tr 
+bgcolor=\&quot;silver\&quot;&gt;&lt;th&gt;IP&lt;/th&gt;
+&lt;th&gt;Date&lt;/th&gt;&lt;th&gt;Method&lt;/th&gt;
+&lt;th&gt;Request&lt;/th&gt;&lt;th&gt;
+Response&lt;/th&gt;&lt;/tr&gt;&quot;);
+    }
+
+/* Печать комментариев к таблице */
+
+    public void viewAsHTML(){
+        Date d = new Date();
+        String date = new 
+String(&quot;&quot;+d.getHours()+&quot;:&quot;
++d.getMinutes()+&quot;:&quot;+d.getSeconds());
+        out.println(&quot;&lt;/table&gt;&lt;hr&gt;
+		generated by logParser at 
+&lt;i&gt;&quot;+date+&quot;&lt;/i&gt;&lt;br&gt;
+&lt;/body&gt;&lt;/html&gt;&quot;);
+        out.flush();
+    }
+
+/* Форматированный вывод содержимого элемента event */
+
+    public void viewLogMessage(Element elem){
+
+      /* 
+	 Получение текста внутри элемента - обращаемся
+ к первому	 дочернему узлу (им должен оказаться текст)
+ и получаем его	 значение, используя метод 
+ getNodeValue() интерфейса Node 
+      */
+
+      String 
+str_from=(elem.getElementsByTagName
+(&quot;ip-from&quot;)).item(0)
+    .getFirstChild().getNodeValue();
+      String 
+str_method=(elem.getElementsByTagName
+(&quot;method&quot;)).item(0).
+     getFirstChild().getNodeValue();
+      String 
+str_to=(elem.getElementsByTagName
+(&quot;url-to&quot;)).item(0).
+getFirstChild().getNodeValue();
+      String 
+str_result=(elem.getElementsByTagName
+(&quot;response&quot;)).item(0).
+getFirstChild().getNodeValue();
+
+      
+out.println(&quot;&lt;tr&gt;&lt;td&gt;&quot;+str_from
++&quot;&lt;/td&gt;&lt;td&gt;&quot;+elem.getAttribute
+(&quot;date&quot;)+&quot;&lt;/td&gt;&lt;td&gt;&quot;
++str_method+&quot;&lt;/td&gt;&lt;td&gt;&quot;+str_to+&quot;&lt;/td&gt;
+&lt;td&gt;&quot;+str_result+&quot;&lt;/td&gt;&lt;/tr&gt;&quot;);
+
+    }
+                             
+
+//=======================================================
+// Модификация дерева элементов
+//=============================
+
+public void logMessage(String result, String datetime,
+	 String method, String ipfrom, String urlto, 
+	 String response){
+
+      if(xmldoc==null) return;
+
+      Element root = xmldoc.getDocumentElement();
+      Element log_elem = xmldoc.createElement
+	  (&quot;event&quot;);
+      log_elem.setAttribute(&quot;result&quot;,result);
+      log_elem.setAttribute(&quot;date&quot;,datetime);
+
+      Element elem;
+      Text elem_value;
+
+      elem = xmldoc.createElement(&quot;method&quot;);
+      elem_value = xmldoc.createTextNode(method);
+      elem.appendChild(elem_value);
+      log_elem.appendChild(elem);
+
+      elem = xmldoc.createElement(&quot;ip-from&quot;);
+      elem_value = xmldoc.createTextNode(ipfrom);
+      elem.appendChild(elem_value);
+      log_elem.appendChild(elem);
+
+      elem = xmldoc.createElement(&quot;url-to&quot;);
+      elem_value = xmldoc.createTextNode(urlto);
+      elem.appendChild(elem_value);
+      log_elem.appendChild(elem);
+
+      elem = xmldoc.createElement(&quot;response&quot;);
+      elem_value = xmldoc.createTextNode(response);
+      elem.appendChild(elem_value);
+      log_elem.appendChild(elem);
+
+      root.appendChild(log_elem); 
+    }
+
+
+//================================================
+// Пример использования методов класса logParser
+//==============================================
+
+    public static void main(String argv[]) {
+
+/*
+ Создание объекта анализатора. В качестве параметра ему 
+ передается название документа(можно и через 
+ командную строку, конечно...)
+*/
+
+ logParser log_file = new logParser(&quot;log.xml&quot;);  
+  log_file.parseDoc();              // Анализ документа
+
+   if (argv.length == 0) {         // Что с ним делать
+      log_file.viewLogAsXML();
+		    System.exit(0);
+        }                     
+
+        for (int i = 0; i &lt; argv.length; i++) {
+            String arg = argv[i];
+
+            if (arg.startsWith(&quot;-&quot;)) {
+                if (arg.equals(&quot;-vx&quot;)) {
+                    log_file.viewLogAsXML();
+                    break;
+                }
+                if (arg.equals(&quot;-va&quot;)) {
+                    log_file.viewLog();
+                    break;
+                }
+                if (arg.equals(&quot;-ve&quot;)) {
+                    log_file.viewErrors();
+                    break;
+                }
+
+	        if (arg.equals(&quot;-h&quot;)) {
+        	   usage();
+                }
+            }
+        }
+
+
+      
+log_file.logMessage(&quot;success&quot;,&quot;12&quot;,
+&quot;GET&quot;,&quot;127.0.0.1&quot;,&quot;./index.html&quot;,
+&quot;200&quot;);
+      log_file.viewLogAsXML();
+
+
+    }
+    private static void usage() {
+
+        System.err.println(&quot;usage: 
+		java logParser (options)&quot;);
+        System.err.println();
+        System.err.println(&quot;options:&quot;);
+        System.err.println(&quot;  
+	-vx View result as XML tree (default)&quot;);
+        System.err.println(&quot;  
+	-va View all messages as HTML page&quot;);
+        System.err.println(&quot; 
+	 -ve View only errors as HTML page&quot;);
+        System.err.println(&quot; 
+	 -h  View help &quot;);
+
+    } 
+
+}
+</pre>
+<p align="justify">&nbsp;&nbsp;&nbsp;<i>Комментарии</i>
+<p align="justify">&nbsp;&nbsp;&nbsp;Более подробные комментарии, файлы приложений и результатов их работы можно найти по адресу <a href="http://www.mrcpk.nstu.ru">www.mrcpk.nstu.ru/xml/</a> 
+
+
+<center>
+<p><font size="-1"><a href="part23.html">Назад</a> |
+ <a href="index.html">Содержание</a>
+</font></center>
+
+<p>&nbsp;
+
+</body></html>

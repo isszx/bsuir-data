@@ -1,0 +1,155 @@
+<html><head>
+<title>Фрэймы | WebClub</title>
+<meta http-equiv=keywords name=keywords content="free, web, frame, фрэйм, tips, советы, JS design , дизайн, JS дизаин">
+<meta http-equiv=description name=description content="Фрэймы. Статья.">
+
+<link rel="stylesheet" href="/site/site.css" type="text/css">
+
+</head>
+<body background="../fon.jpg">
+<h4 align="center"><font size="3">Фреймы</font></h4>
+<p><font size="2"><img src="dot.gif" height=1 width=1 border=0 hspace=10 >Бродя 
+  по Интернету, вы наверняка не раз видели странички разбитые на несколько частей. 
+  Эти части и называются фреймами. Программно разбиение окна браузера на фреймы 
+  реализуется так:</font></p>
+<p><font size="2"><b>1</b>. Создается html файл (обычно это первая страничка сервера 
+  по имени index.htm) в котором задаются размеры и количество фреймов, а также 
+  имена файлов соответствующих фреймам и некоторые атрибуты для каждого фрейма.</font></p>
+<p><font size="2"><b>2</b>. Создаются отдельные html странички для каждого фрейма.</font></p>
+<p><font size="2"><img src="dot.gif" height=1 width=1 border=0 hspace=10 >Попробуем 
+  создать html файл реализующий разбиение экрана на две части. Для этого нам понадобится 
+  два обычных html файла с именами homepage.htm и menu.htm. Главный файл обзовем 
+  к примеру index.htm, вот как он должен выглядеть:</font></p>
+<p><font size="2"><b>&lt;HTML&gt;<br clear=both>
+  &lt;TITLE&gt;Название вашей странички&lt;/TITLE&gt;<br clear=both>
+  &lt;FRAMESET cols=&quot;*,140&quot;&gt;<br clear=both>
+  &lt;FRAME SRC=&quot;homepage.htm&quot; NAME=&quot;frame1&quot;&gt;<br clear=both>
+  &lt;FRAME SRC=&quot;menu.htm&quot; NAME=&quot;frame2&quot;&gt;<br clear=both>
+  &lt;/FRAMESET&gt;<br clear=both>
+  &lt;/HTML&gt;</b></font></p>
+<p><font size="2"><img src="dot.gif" height=1 width=1 border=0 hspace=10 >Рассмотрим 
+  каждый тэг по отдельности:</font></p>
+<p><font size="2"><b>&lt;HTML&gt;&lt;/HTML&gt;</b> и <b>&lt;TITLE&gt;&lt;TITLE&gt;</b> 
+  - стандартные тэги для всех html файлов</font></p>
+<p><font size="2"><b>&lt;FRAMESET&gt;</b> в этом тэге задается количество рядов 
+  или столбцов <b>ROWS</b> и <b>COLS</b> соответственно, а также их размеры и 
+  расположение. Существует три способа задания их размера:</font></p>
+<p><font size="2"><b>по пикселам </b>- просто напишите высоту или ширину в пикселах.<br clear=both>
+  <b>процентами </b>- пишите сколько процентов от окна браузера вы хотите отдать 
+  фрейму и после цифр ставите знак % Также позаботьтесь чтобы все ваши %`ы в суме 
+  составляли 100%.<br clear=both>
+  <b>звездочка </b>- все оставшееся место в окне равняется значку *. Например 
+  вы можете написать 20%,20%,60% или 20%,20%,* и никакой разницы не будет.</font></p>
+<p><font size="2"><img src="dot.gif" height=1 width=1 border=0 hspace=10 >В этом 
+  же тэге можно задать толщину разграничительной линии и окаймляющей рамки командами 
+  <b>FRAMEBORDER=&quot;X&quot;</b> и <b>BORDER=&quot;Y&quot;</b> где x и y толщина 
+  в пикселах.</font></p>
+<p><font size="2"><img src="dot.gif" height=1 width=1 border=0 hspace=10 >В нашем 
+  случае (&lt;FRAMESET cols=&quot;*,140&quot;&gt;) мы разделяем окно на два столбца, 
+  правое шириной в 140 пикселов, а левое шириной во весь оставшийся экран</font></p>
+<p><font size="2"><b>&lt;FRAME&gt;</b> - здесь задаются атрибуты для каждого фрейма 
+  персонально.</font></p>
+<p><font size="2"><img src="dot.gif" height=1 width=1 border=0 hspace=10 >Команда 
+  <b>SRC</b> задает имя файла который загрузится в этом фрейме, в нашем случае 
+  имя файла homepage.htm (&lt;FRAME SRC=&quot;homepage.htm&quot; ...).</font></p>
+<p><font size="2"><img src="dot.gif" height=1 width=1 border=0 hspace=10 >Команда 
+  <b>NAME</b> задает имя данного фрейма, в нашем случае имя &quot;frame1&quot; 
+  . Имя необходимо для того чтобы в последствии указать к какому фрейму использовать 
+  ссылку. К примеру мы хотим чтобы нажимая на ссылку в фрейме содержащем файл 
+  menu.htm содержимое файла ссылки показывалось в фрейме содержащем файл homepage.htm. 
+  Для этого нам необходимо откоректировать html код ссылки:</font></p>
+<p><font size="2"><b>&lt;A HREF=&quot;file.htm&quot;&gt;file&lt;/A&gt;</b> - что 
+  было<br clear=both>
+  <b>&lt;A HREF=&quot;file.htm&quot; TARGET=&quot;frame1&quot;&gt;file&lt;/A&gt;</b> 
+  - что должно быть<br clear=both>
+  А если вы хотите чтобы файл загрузился в главном окне браузера то напишите в 
+  ссылке <b>TARGET=&quot;_top&quot;</b></font></p>
+<p><font size="2">Также в этом тэге можно задать величину граници фрейма за которую 
+  ничего кроме бэкграунда не может заходить. Это делается командами MARGINWIDTH=&quot;x&quot; 
+  и MARGINHEIGHT=&quot;y&quot;, где x и y величина в пикселах.</font></p>
+<p><font size="2"><b>&lt;/FRAMESET&gt;</b> закрывающий тэг.</font></p>
+<p><font size="2"><b>Вот несколько примеров создания фреймов:</b></font></p>
+<table cellpadding=5 width="100%" >
+  <tr valign=top> 
+    <td><b><font size=-1>&lt;FRAMESET cols=&quot;*,140&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;homepage.htm&quot; NAME=&quot;frame1&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;menu.htm&quot; NAME=&quot;frame2&quot;&gt;<br clear=both>
+      &lt;/FRAMESET&gt;</font></b></td>
+  </tr>
+</table>
+<table cellpadding=5 width="100%" >
+  <tr valign=top> 
+    <td width="1%"><img src="fr2.gif" height=70 width=100></td>
+    <td><b><font size=-1>&lt;FRAMESET cols=&quot;100,*&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;homepage.htm&quot; NAME=&quot;Frame1&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;menu.htm&quot; NAME=&quot;Frame2&quot;&gt;<br clear=both>
+      &lt;/FRAMESET&gt;</font></b></td>
+  </tr>
+</table>
+<table cellpadding=5 width="100%" >
+  <tr valign=top> 
+    <td width="1%"><img src="fr3.gif" height=70 width=100></td>
+    <td><b><font size=-1>&lt;FRAMESET rows=&quot;100,*&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;homepage.htm&quot; NAME=&quot;Frame1&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;menu.htm&quot; NAME=&quot;Frame2&quot;&gt;<br clear=both>
+      &lt;/FRAMESET&gt;</font></b></td>
+  </tr>
+</table>
+<table cellpadding=5 width="100%" >
+  <tr valign=top> 
+    <td width="1%"><img src="fr4.gif" height=70 width=100></td>
+    <td><b><font size=-1>&lt;FRAMESET rows=&quot;*,60&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;homepage.htm&quot; NAME=&quot;Frame1&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;menu.htm&quot; NAME=&quot;Frame2&quot;&gt;<br clear=both>
+      &lt;/FRAMESET&gt;</font></b></td>
+  </tr>
+</table>
+<table cellpadding=5 width="100%" >
+  <tr valign=top> 
+    <td width="1%"><img src="fr5.gif" height=70 width=100></td>
+    <td><b><font size=-1>&lt;FRAMESET rows=&quot;*,60&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;homepage.htm&quot; NAME=&quot;Frame1&quot;&gt;<br clear=both>
+      &lt;FRAMESET cols=&quot;45%,55%&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;menu.htm&quot; NAME=&quot;Frame2&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;menu2.htm&quot; NAME=&quot;Frame3&quot;&gt;<br clear=both>
+      &lt;/FRAMESET&gt;<br clear=both>
+      &lt;/FRAMESET&gt;</font></b></td>
+  </tr>
+</table>
+<table cellpadding=5 width="100%" >
+  <tr valign=top> 
+    <td width="1%"><img src="fr6.gif" height=70 width=100></td>
+    <td><b><font size=-1>&lt;FRAMESET cols=&quot;*,55%&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;homepage.htm&quot; NAME=&quot;Frame1&quot;&gt;<br clear=both>
+      &lt;FRAMESET rows=&quot;15%,15%,70%&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;menu.htm&quot; NAME=&quot;Frame2&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;menu2.htm&quot; NAME=&quot;Frame3&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;menu3.htm&quot; NAME=&quot;Frame4&quot;&gt;<br clear=both>
+      &lt;/FRAMESET&gt;<br clear=both>
+      &lt;/FRAMESET&gt;</font></b></td>
+  </tr>
+</table>
+<table cellpadding=5 width="100%" >
+  <tr valign=top> 
+    <td width="1%"><img src="fr7.gif" height=70 width=100></td>
+    <td><b><font size=-1>&lt;FRAMESET cols=&quot;50%,50%&quot;&gt;<br clear=both>
+      &lt;FRAMESET rows=&quot;50%,50%&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;homepage.htm&quot; NAME=&quot;Frame1&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;homepage2.htm&quot; NAME=&quot;Frame2&quot;&gt;<br clear=both>
+      &lt;/FRAMESET&gt;<br clear=both>
+      &lt;FRAMESET rows=&quot;50%,50%&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;menu.htm&quot; NAME=&quot;Frame3&quot;&gt;<br clear=both>
+      &lt;FRAME SRC=&quot;menu2.htm&quot; NAME=&quot;Frame4&quot;&gt;<br clear=both>
+      &lt;/FRAMESET&gt;<br clear=both>
+      &lt;/FRAMESET&gt;</font></b></td>
+  </tr>
+</table>
+<p><font size="2"><b>А теперь на закуску несколько трюков с фреймами:</b></font></p>
+<p><font size="2"><b>1</b>. Если ваш сервер поддерживает кэширование можно создать 
+  один невидимый фрейм (толщиной в 0 пикселов) и загружать в нем разные картинки 
+  чтобы они в последствии моментально грузились в другом документе.</font></p>
+<p><font size="2"><b>2</b>. А еще можно создать фрейм соответствующий размеру 
+  картинки бэкграунда , выключить бордюр и окаймляющую рамку и тогда когда документ 
+  загрузится он будет выглядеть как обычный одно-экранный документ.</font></p>
+</body></html>
+
